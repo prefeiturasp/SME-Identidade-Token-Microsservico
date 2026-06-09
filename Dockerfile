@@ -8,17 +8,31 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY pyproject.toml README.md /app/
 COPY requirements /app/requirements
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \ 
-    && rm -rf /var/lib/apt/lists/* \
-    && addgroup --system app \
-    && adduser --system --ingroup app app \
-    pip install --upgrade pip \
+RUN pip install --upgrade pip \
     && pip install --prefix=/install -r /app/requirements/base.txt \
     && pip install --prefix=/install gunicorn
+
+
+FROM --platform=linux/amd64 python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && addgroup --system app \
+    && adduser --system --ingroup app app
 
 COPY --from=builder /install /usr/local
 COPY apps /app/apps
