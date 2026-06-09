@@ -8,7 +8,7 @@ from rest_framework.test import APIClient
 class TestHealthCheckView:
     """Testes da view HealthCheckView."""
 
-    def test_deve_retornar_aplicacao_saudavel(self):
+    def test_deve_retornar_aplicacao_saudavel(self) -> None:
         """Deve retornar o status de saúde da aplicação."""
         response = APIClient().get(
             reverse("health-check"),
