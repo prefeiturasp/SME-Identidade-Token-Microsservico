@@ -22,7 +22,7 @@ help:
 	@echo "    make test-core        — apenas apps.core"
 	@echo ""
 	@echo "  Qualidade:"
-	@echo "    make lint             — ruff + mypy"
+	@echo "    make lint             — ruff + black + isort + mypy"
 	@echo "    make coverage         — relatório HTML em docs/_cov/"
 	@echo "    make schema           — gera schema OpenAPI em schema.yml"
 	@echo "    make docs             — gera documentação Sphinx em docs/_build/html/"
