@@ -69,7 +69,7 @@ Use `make help` para listar todos os comandos disponíveis. Os principais:
 
 | Comando | Descrição |
 |---|---|
-| `make lint` | ruff + mypy |
+| `make lint` | ruff + black + isort + mypy |
 | `make coverage` | Relatório HTML em `docs/_cov/` |
 | `make schema` | Gera schema OpenAPI em `schema.yml` |
 | `make docs` | Gera documentação Sphinx em `docs/_build/html/` |
