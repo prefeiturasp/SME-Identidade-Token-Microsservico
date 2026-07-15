@@ -108,8 +108,7 @@ class ProjecaoUsuarioView(APIView):
         try:
             serializer.save(usuario_id=usuario_id)
 
-        except Exception as err:
-            print(f"Erro ao sincronizar projeção de usuário: {err}")
+        except Exception:
             return Response(
                 data={
                     "detail": (
