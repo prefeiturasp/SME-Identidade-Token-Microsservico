@@ -15,6 +15,9 @@ help:
 	@echo "    make build            — rebuild da imagem dev"
 	@echo "    make stop             — para e remove containers"
 	@echo ""
+	@echo "  Migrações:"
+	@echo "    make migrate           — aplica migrations no DB"
+	@echo ""
 	@echo "  Testes (suite completa):"
 	@echo "    make test             — todos os apps com cobertura ≥80%"
 	@echo ""
@@ -39,6 +42,13 @@ build:
 
 stop:
 	$(COMPOSE) down
+
+# ---------------------------------------------------------------------------
+# Migrações
+# ---------------------------------------------------------------------------
+
+migrate:
+	$(RUN) python manage.py migrate --noinput
 
 # ---------------------------------------------------------------------------
 # Testes — suite completa
