@@ -1,4 +1,4 @@
-"""Testes para apps.controle_etl.autenticacao."""
+"""Testes para apps.autenticacao.api.autenticacao."""
 
 from __future__ import annotations
 
