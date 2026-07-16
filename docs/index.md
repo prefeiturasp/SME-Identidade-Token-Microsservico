@@ -10,5 +10,7 @@ Além da emissão de tokens enriquecidos, o serviço gerencia a persistência de
 :maxdepth: 2
 :caption: Conteúdo
 
+arquitetura/visao_geral
+controle/index
 api
 ```
