@@ -37,9 +37,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /install /usr/local
 COPY apps /app/apps
 COPY config /app/config
+COPY scripts /app/scripts
 COPY manage.py /app/
 
-RUN chown -R app:app /app
+RUN python manage.py collectstatic --noinput 2>/dev/null || true \
+    && chmod +x /app/scripts/entrypoint.sh \
+    && chown -R app:app /app
 
 USER app
 
