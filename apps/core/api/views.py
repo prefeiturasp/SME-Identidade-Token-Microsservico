@@ -10,10 +10,7 @@ from apps.core.api.serializers import HealthStatusSerializer
 class HealthCheckView(APIView):
     """Disponibiliza o endpoint de verificação de saúde da aplicação."""
 
-    def get(
-        self,
-        request: Request
-    ) -> Response:
+    def get(self, request: Request) -> Response:
         """Retorna o estado de saúde da aplicação.
 
         Args:

@@ -1,15 +1,52 @@
 services:
   identidade_token:
     platform: linux/amd64
+
     build:
       context: .
       dockerfile: Dockerfile.dev
+
     volumes:
       - .:/app
+
     env_file:
       - .env
 
+    depends_on:
+      postgres:
+        condition: service_healthy
+
     command: python manage.py runserver 0.0.0.0:${PORT_WEB:-8002}
+
     ports:
       - "${PORT_WEB:-8002}:${PORT_WEB:-8002}"
+
     restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: identidade_token_db
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${IDENTIDADE_TOKEN_DB_NAME:-identidade_token}
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - identidade_token_db:/var/lib/postgresql/data
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${IDENTIDADE_TOKEN_DB_NAME:-identidade_token}"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  identidade_token_db:

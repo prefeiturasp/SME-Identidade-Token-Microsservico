@@ -16,3 +16,24 @@ Core
 
 .. automodule:: apps.core.api.urls
    :members:
+
+Autenticação
+------------
+
+.. automodule:: apps.autenticacao.api.autenticacao
+   :members:
+
+Perfil
+------
+
+.. automodule:: apps.perfil.api.views
+   :members:
+
+.. automodule:: apps.perfil.api.serializers
+   :members:
+
+.. automodule:: apps.perfil.api.urls
+   :members:
+
+.. automodule:: apps.perfil.models
+   :members:
