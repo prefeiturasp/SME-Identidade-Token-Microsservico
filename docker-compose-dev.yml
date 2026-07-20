@@ -12,6 +12,9 @@ services:
     env_file:
       - .env
 
+    environment:
+      IDENTIDADE_TOKEN_DB_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres/${IDENTIDADE_TOKEN_DB_NAME:-identidade_token}
+
     depends_on:
       postgres:
         condition: service_healthy

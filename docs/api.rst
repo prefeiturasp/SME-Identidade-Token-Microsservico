@@ -26,6 +26,9 @@ Autenticação
 Perfil
 ------
 
+.. automodule:: apps.perfil.models
+   :members:
+
 .. automodule:: apps.perfil.api.views
    :members:
 
@@ -35,5 +38,20 @@ Perfil
 .. automodule:: apps.perfil.api.urls
    :members:
 
-.. automodule:: apps.perfil.models
+Atributos complementares
+-------------------------
+
+.. automodule:: apps.atributos_complementares.models
+   :members:
+
+.. automodule:: apps.atributos_complementares.servicos
+   :members:
+
+.. automodule:: apps.atributos_complementares.api.views
+   :members:
+
+.. automodule:: apps.atributos_complementares.api.serializers
+   :members:
+
+.. automodule:: apps.atributos_complementares.api.urls
    :members:
