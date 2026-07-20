@@ -55,7 +55,7 @@ class ProjecaoUsuarioView(APIView):
         try:
             usuario = ProjecaoUsuario.objects.prefetch_related(
                 "perfis",
-                "permissoes",
+                "modulos_permissao",
             ).get(usuario_id=usuario_id)
 
         except ProjecaoUsuario.DoesNotExist:

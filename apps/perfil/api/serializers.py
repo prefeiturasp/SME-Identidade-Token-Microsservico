@@ -6,8 +6,8 @@ from django.db import transaction
 from rest_framework import serializers
 
 from apps.perfil.models import (
+    ModuloPermissaoUsuario,
     PerfilUsuario,
-    PermissaoUsuario,
     ProjecaoUsuario,
 )
 
@@ -26,14 +26,20 @@ class PerfilUsuarioSerializer(serializers.ModelSerializer):
         )
 
 
-class PermissaoUsuarioSerializer(serializers.ModelSerializer):
-    """Representa as permissões concedidas a um usuário."""
+class ModuloPermissaoUsuarioSerializer(serializers.ModelSerializer):
+    """Representa as permissões de um módulo concedidas a um usuário."""
 
     class Meta:
-        model = PermissaoUsuario
+        model = ModuloPermissaoUsuario
         fields = (
-            "codigo",
-            "descricao",
+            "sistema_id",
+            "sistema_nome",
+            "modulo_id",
+            "modulo_nome",
+            "consultar",
+            "inserir",
+            "alterar",
+            "excluir",
         )
 
 
@@ -45,7 +51,7 @@ class ProjecaoUsuarioSerializer(serializers.ModelSerializer):
     )
 
     perfis = PerfilUsuarioSerializer(many=True)
-    permissoes = PermissaoUsuarioSerializer(many=True)
+    permissoes = ModuloPermissaoUsuarioSerializer(many=True)
 
     class Meta:
         model = ProjecaoUsuario
@@ -109,14 +115,20 @@ class ProjecaoUsuarioSerializer(serializers.ModelSerializer):
         permissoes: list[dict],
     ) -> None:
         """Substitui as permissões associadas ao usuário."""
-        usuario.permissoes.all().delete()
+        usuario.modulos_permissao.all().delete()
 
-        PermissaoUsuario.objects.bulk_create(
+        ModuloPermissaoUsuario.objects.bulk_create(
             [
-                PermissaoUsuario(
+                ModuloPermissaoUsuario(
                     usuario=usuario,
-                    codigo=permissao["codigo"],
-                    descricao=permissao["descricao"],
+                    sistema_id=permissao["sistema_id"],
+                    sistema_nome=permissao["sistema_nome"],
+                    modulo_id=permissao["modulo_id"],
+                    modulo_nome=permissao["modulo_nome"],
+                    consultar=permissao["consultar"],
+                    inserir=permissao["inserir"],
+                    alterar=permissao["alterar"],
+                    excluir=permissao["excluir"],
                 )
                 for permissao in permissoes
             ]
@@ -127,7 +139,9 @@ class ProjecaoUsuarioReadSerializer(serializers.ModelSerializer):
     """Representa a projeção de usuário para consulta."""
 
     perfis = PerfilUsuarioSerializer(many=True, read_only=True)
-    permissoes = PermissaoUsuarioSerializer(many=True, read_only=True)
+    permissoes = ModuloPermissaoUsuarioSerializer(
+        many=True, read_only=True, source="modulos_permissao"
+    )
 
     class Meta:
         model = ProjecaoUsuario

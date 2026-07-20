@@ -10,8 +10,8 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from apps.perfil.models import (
+    ModuloPermissaoUsuario,
     PerfilUsuario,
-    PermissaoUsuario,
     ProjecaoUsuario,
 )
 
@@ -53,8 +53,14 @@ class TestProjecaoUsuarioView(TestCase):
             ],
             "permissoes": [
                 {
-                    "codigo": 1,
-                    "descricao": "Permissão 1",
+                    "sistema_id": 1,
+                    "sistema_nome": "CoreSSO",
+                    "modulo_id": 3,
+                    "modulo_nome": "Usuários",
+                    "consultar": True,
+                    "inserir": False,
+                    "alterar": False,
+                    "excluir": False,
                 },
             ],
         }
@@ -80,10 +86,13 @@ class TestProjecaoUsuarioView(TestCase):
             ativo=True,
         )
 
-        PermissaoUsuario.objects.create(
+        ModuloPermissaoUsuario.objects.create(
             usuario=usuario,
-            codigo=1,
-            descricao="Permissão 1",
+            sistema_id=1,
+            sistema_nome="CoreSSO",
+            modulo_id=3,
+            modulo_nome="Usuários",
+            consultar=True,
         )
 
         response = self.client.get(self.url)
@@ -129,7 +138,7 @@ class TestProjecaoUsuarioView(TestCase):
         assert usuario.login == self.payload["login"]
         assert usuario.nome == self.payload["nome"]
         assert usuario.perfis.count() == 1
-        assert usuario.permissoes.count() == 1
+        assert usuario.modulos_permissao.count() == 1
 
     def test_deve_atualizar_projecao_usuario(self) -> None:
         """Deve atualizar uma projeção existente."""
@@ -152,10 +161,12 @@ class TestProjecaoUsuarioView(TestCase):
             ativo=True,
         )
 
-        PermissaoUsuario.objects.create(
+        ModuloPermissaoUsuario.objects.create(
             usuario=usuario,
-            codigo=999,
-            descricao="Permissão Antiga",
+            sistema_id=999,
+            sistema_nome="Sistema Antigo",
+            modulo_id=1,
+            modulo_nome="Módulo Antigo",
         )
 
         response = self.client.put(
@@ -178,14 +189,14 @@ class TestProjecaoUsuarioView(TestCase):
         assert usuario.contrato_externo is False
 
         assert usuario.perfis.count() == 1
-        assert usuario.permissoes.count() == 1
+        assert usuario.modulos_permissao.count() == 1
 
         assert not usuario.perfis.filter(
             nome="Perfil Antigo",
         ).exists()
 
-        assert not usuario.permissoes.filter(
-            codigo=999,
+        assert not usuario.modulos_permissao.filter(
+            sistema_id=999,
         ).exists()
 
     def test_deve_retornar_400_quando_payload_for_invalido(

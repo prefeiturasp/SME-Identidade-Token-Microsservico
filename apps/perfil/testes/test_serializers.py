@@ -6,8 +6,8 @@ from django.test import TestCase
 
 from apps.perfil.api.serializers import ProjecaoUsuarioSerializer
 from apps.perfil.models import (
+    ModuloPermissaoUsuario,
     PerfilUsuario,
-    PermissaoUsuario,
     ProjecaoUsuario,
 )
 
@@ -42,12 +42,24 @@ class TestProjecaoUsuarioSerializer(TestCase):
             ],
             "permissoes": [
                 {
-                    "codigo": 1,
-                    "descricao": "Permissão 1",
+                    "sistema_id": 1,
+                    "sistema_nome": "CoreSSO",
+                    "modulo_id": 3,
+                    "modulo_nome": "Usuários",
+                    "consultar": True,
+                    "inserir": True,
+                    "alterar": False,
+                    "excluir": False,
                 },
                 {
-                    "codigo": 2,
-                    "descricao": "Permissão 2",
+                    "sistema_id": 176,
+                    "sistema_nome": "Boletim Online",
+                    "modulo_id": 1,
+                    "modulo_nome": "Boletim Online",
+                    "consultar": True,
+                    "inserir": True,
+                    "alterar": True,
+                    "excluir": True,
                 },
             ],
         }
@@ -80,7 +92,7 @@ class TestProjecaoUsuarioSerializer(TestCase):
         self.assertFalse(usuario.contrato_externo)
 
         self.assertEqual(usuario.perfis.count(), 2)
-        self.assertEqual(usuario.permissoes.count(), 2)
+        self.assertEqual(usuario.modulos_permissao.count(), 2)
 
     def test_deve_atualizar_projecao_usuario_existente(self) -> None:
         """Deve atualizar uma projeção existente."""
@@ -103,10 +115,12 @@ class TestProjecaoUsuarioSerializer(TestCase):
             ativo=True,
         )
 
-        PermissaoUsuario.objects.create(
+        ModuloPermissaoUsuario.objects.create(
             usuario=usuario,
-            codigo=999,
-            descricao="Permissão Antiga",
+            sistema_id=999,
+            sistema_nome="Sistema Antigo",
+            modulo_id=1,
+            modulo_nome="Módulo Antigo",
         )
 
         serializer = ProjecaoUsuarioSerializer(data=self.payload)
@@ -129,14 +143,14 @@ class TestProjecaoUsuarioSerializer(TestCase):
         self.assertFalse(usuario.contrato_externo)
 
         self.assertEqual(usuario.perfis.count(), 2)
-        self.assertEqual(usuario.permissoes.count(), 2)
+        self.assertEqual(usuario.modulos_permissao.count(), 2)
 
         self.assertFalse(
             usuario.perfis.filter(nome="Perfil Antigo").exists(),
         )
 
         self.assertFalse(
-            usuario.permissoes.filter(codigo=999).exists(),
+            usuario.modulos_permissao.filter(sistema_id=999).exists(),
         )
 
     def test_deve_substituir_perfis_existentes(self) -> None:
@@ -178,10 +192,12 @@ class TestProjecaoUsuarioSerializer(TestCase):
             situacao="ATIVO",
         )
 
-        PermissaoUsuario.objects.create(
+        ModuloPermissaoUsuario.objects.create(
             usuario=usuario,
-            codigo=999,
-            descricao="Permissão Antiga",
+            sistema_id=999,
+            sistema_nome="Sistema Antigo",
+            modulo_id=1,
+            modulo_nome="Módulo Antigo",
         )
 
         serializer = ProjecaoUsuarioSerializer(data=self.payload)
@@ -192,8 +208,8 @@ class TestProjecaoUsuarioSerializer(TestCase):
 
         usuario.refresh_from_db()
 
-        self.assertEqual(usuario.permissoes.count(), 2)
+        self.assertEqual(usuario.modulos_permissao.count(), 2)
 
         self.assertFalse(
-            usuario.permissoes.filter(codigo=999).exists(),
+            usuario.modulos_permissao.filter(sistema_id=999).exists(),
         )

@@ -5,8 +5,8 @@ from uuid import uuid4
 from django.test import TestCase
 
 from apps.perfil.models import (
+    ModuloPermissaoUsuario,
     PerfilUsuario,
-    PermissaoUsuario,
     ProjecaoUsuario,
 )
 
@@ -89,11 +89,11 @@ class TestPerfilUsuarioModel(TestCase):
         assert self.perfil.usuario.perfis.first() == self.perfil
 
 
-class TestPermissaoUsuarioModel(TestCase):
-    """Testes do model PermissaoUsuario."""
+class TestModuloPermissaoUsuarioModel(TestCase):
+    """Testes do model ModuloPermissaoUsuario."""
 
     def setUp(self) -> None:
-        """Cria uma permissão de usuário."""
+        """Cria uma permissão de módulo para um usuário."""
         usuario = ProjecaoUsuario.objects.create(
             usuario_id=uuid4(),
             login="usuario.teste",
@@ -101,49 +101,54 @@ class TestPermissaoUsuarioModel(TestCase):
             situacao="ATIVO",
         )
 
-        self.permissao = PermissaoUsuario.objects.create(
+        self.permissao = ModuloPermissaoUsuario.objects.create(
             usuario=usuario,
-            codigo=100,
-            descricao="Consultar usuários",
+            sistema_id=1,
+            sistema_nome="CoreSSO",
+            modulo_id=3,
+            modulo_nome="Usuários",
+            consultar=True,
+            inserir=True,
+            alterar=False,
+            excluir=False,
         )
 
     def test_deve_criar_permissao_usuario(self) -> None:
-        """Deve criar uma permissão de usuário."""
-        assert PermissaoUsuario.objects.count() == 1
+        """Deve criar uma permissão de módulo do usuário."""
+        assert ModuloPermissaoUsuario.objects.count() == 1
 
-        assert self.permissao.codigo == 100
-        assert self.permissao.descricao == "Consultar usuários"
+        assert self.permissao.sistema_nome == "CoreSSO"
+        assert self.permissao.modulo_nome == "Usuários"
+        assert self.permissao.consultar is True
+        assert self.permissao.excluir is False
 
-    def test_deve_retornar_descricao_no_str(self) -> None:
-        """Deve retornar a descrição da permissão."""
-        assert str(self.permissao) == "Consultar usuários"
-
-    def test_deve_retornar_string_vazia_quando_descricao_for_nula(
-        self,
-    ) -> None:
-        """Deve retornar string vazia quando não houver descrição."""
-        usuario = ProjecaoUsuario.objects.create(
-            usuario_id=uuid4(),
-            login="usuario2",
-            nome="Usuário 2",
-            situacao="ATIVO",
-        )
-
-        permissao = PermissaoUsuario.objects.create(
-            usuario=usuario,
-            codigo=200,
-        )
-
-        assert str(permissao) == ""
+    def test_deve_retornar_sistema_e_modulo_no_str(self) -> None:
+        """Deve retornar sistema e módulo formatados na string."""
+        assert str(self.permissao) == "CoreSSO > Usuários"
 
     def test_deve_possuir_metadados_corretos(self) -> None:
         """Deve possuir os metadados configurados."""
-        meta = PermissaoUsuario._meta
+        meta = ModuloPermissaoUsuario._meta
 
-        assert meta.verbose_name == "Permissão de usuário"
-        assert meta.verbose_name_plural == "Permissões de usuários"
+        assert meta.verbose_name == "Permissão de módulo do usuário"
+        assert meta.verbose_name_plural == "Permissões de módulos do usuário"
 
     def test_deve_relacionar_permissao_ao_usuario(self) -> None:
         """Deve relacionar a permissão ao usuário."""
-        assert self.permissao.usuario.permissoes.count() == 1
-        assert self.permissao.usuario.permissoes.first() == self.permissao
+        assert self.permissao.usuario.modulos_permissao.count() == 1
+        assert (
+            self.permissao.usuario.modulos_permissao.first() == self.permissao
+        )
+
+    def test_deve_impedir_duplicidade_de_sistema_e_modulo(self) -> None:
+        """Deve impedir duas permissões para o mesmo sistema/módulo."""
+        from django.db import IntegrityError
+
+        with self.assertRaises(IntegrityError):
+            ModuloPermissaoUsuario.objects.create(
+                usuario=self.permissao.usuario,
+                sistema_id=1,
+                sistema_nome="CoreSSO",
+                modulo_id=3,
+                modulo_nome="Usuários (duplicado)",
+            )

@@ -58,8 +58,21 @@ class PerfilUsuario(models.Model):
         return str(self.nome)
 
 
-class PermissaoUsuario(models.Model):
-    """Registra as permissões concedidas a um usuário."""
+class ModuloPermissaoUsuario(models.Model):
+    """Registra as permissões CRUD de um usuário por módulo de sistema.
+
+    Modelo fiel à fonte real do CoreSSO (``SYS_GrupoPermissao`` +
+    ``SYS_Modulo``): a permissão é concedida por grupo, sistema e
+    módulo, com quatro ações independentes — não existe um "código de
+    permissão" único no legado, a granularidade real é
+    (sistema, módulo, ação). ``sistema_id``/``modulo_id`` usam
+    nomenclatura de domínio, não os nomes de coluna de origem
+    (``sis_id``/``mod_id``), mesmo padrão de ``dre_codigo`` em
+    ``ProjecaoUsuario``. ``modulo_id`` sozinho não é chave natural —
+    o mesmo id é reaproveitado em módulos de sistemas diferentes no
+    CoreSSO — por isso a unicidade é sempre pelo par
+    (sistema_id, modulo_id).
+    """
 
     id = models.UUIDField(
         primary_key=True,
@@ -69,17 +82,29 @@ class PermissaoUsuario(models.Model):
     usuario = models.ForeignKey(
         ProjecaoUsuario,
         on_delete=models.CASCADE,
-        related_name="permissoes",
+        related_name="modulos_permissao",
     )
-    codigo = models.IntegerField()
-    descricao = models.CharField(max_length=255, null=True, blank=True)
+    sistema_id = models.IntegerField()
+    sistema_nome = models.CharField(max_length=255)
+    modulo_id = models.IntegerField()
+    modulo_nome = models.CharField(max_length=255)
+    consultar = models.BooleanField(default=False)
+    inserir = models.BooleanField(default=False)
+    alterar = models.BooleanField(default=False)
+    excluir = models.BooleanField(default=False)
 
     class Meta:
         """Configurações de metadados do modelo."""
 
-        verbose_name = "Permissão de usuário"
-        verbose_name_plural = "Permissões de usuários"
+        verbose_name = "Permissão de módulo do usuário"
+        verbose_name_plural = "Permissões de módulos do usuário"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["usuario", "sistema_id", "modulo_id"],
+                name="uniq_modulo_permissao_usuario",
+            )
+        ]
 
     def __str__(self) -> str:
-        """Retorna a descrição da permissão."""
-        return str(self.descricao or "")
+        """Retorna sistema e módulo da permissão."""
+        return f"{self.sistema_nome} > {self.modulo_nome}"

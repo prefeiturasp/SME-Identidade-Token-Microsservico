@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.autenticacao",
     "apps.perfil",
+    "apps.atributos_complementares",
 ]
 
 MIDDLEWARE = [
