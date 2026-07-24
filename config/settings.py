@@ -6,10 +6,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY",
-    "dev-inseguro-apenas-desenvolvimento",
-)
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 API_KEY = os.getenv("API_KEY", "dev-key-default")
 API_KEY_HEADER = os.getenv("API_KEY_HEADER", "X-API-Key")
 DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
@@ -30,6 +27,7 @@ INSTALLED_APPS = [
     "apps.autenticacao",
     "apps.perfil",
     "apps.atributos_complementares",
+    "apps.tokens",
 ]
 
 MIDDLEWARE = [
@@ -124,3 +122,13 @@ SPECTACULAR_SETTINGS = {
     },
     "SECURITY": [{"ApiKeyAuth": []}],
 }
+
+JWT_ENRIQUECIDO_PRIVATE_KEY_PATH = os.getenv(
+    "JWT_ENRIQUECIDO_PRIVATE_KEY_PATH"
+)
+JWT_ENRIQUECIDO_PUBLIC_KEY_PATH = os.getenv("JWT_ENRIQUECIDO_PUBLIC_KEY_PATH")
+JWT_ENRIQUECIDO_KID = os.getenv("JWT_ENRIQUECIDO_KID")
+JWT_ENRIQUECIDO_ALGORITMO = os.getenv("JWT_ENRIQUECIDO_ALGORITMO")
+JWT_ENRIQUECIDO_TTL_SEGUNDOS = int(
+    os.getenv("JWT_ENRIQUECIDO_TTL_SEGUNDOS", "28800")
+)
