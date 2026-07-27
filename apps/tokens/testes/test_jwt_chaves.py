@@ -114,7 +114,7 @@ class TestObterConfiguracaoStr(SimpleTestCase):
         """Testa erro quando a configuração não está definida."""
         with self.assertRaisesMessage(
             ValueError,
-            ("A configuração JWT_ENRIQUECIDO_KID " "precisa ser definida."),
+            ("A configuração JWT_ENRIQUECIDO_KID precisa ser definida."),
         ):
             _obter_configuracao_str(
                 None,
