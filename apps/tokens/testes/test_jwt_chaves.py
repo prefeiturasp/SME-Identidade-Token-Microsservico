@@ -23,7 +23,7 @@ class TestLerArquivo(SimpleTestCase):
         """Testa a leitura do conteúdo de um arquivo."""
         mock_read_text.return_value = "conteudo"
 
-        conteudo = _ler_arquivo("/tmp/chave.pem")
+        conteudo = _ler_arquivo("/run/secrets/chave.pem")
 
         self.assertEqual(conteudo, "conteudo")
         mock_read_text.assert_called_once_with(
@@ -32,7 +32,7 @@ class TestLerArquivo(SimpleTestCase):
 
 
 @override_settings(
-    JWT_ENRIQUECIDO_PRIVATE_KEY_PATH="/tmp/private.pem",
+    JWT_ENRIQUECIDO_PRIVATE_KEY_PATH="/run/secrets/private.pem",
 )
 class TestObterChavePrivada(SimpleTestCase):
     """Testa a obtenção da chave privada."""
@@ -53,12 +53,12 @@ class TestObterChavePrivada(SimpleTestCase):
         )
 
         mock_ler_arquivo.assert_called_once_with(
-            "/tmp/private.pem",
+            "/run/secrets/private.pem",
         )
 
 
 @override_settings(
-    JWT_ENRIQUECIDO_PUBLIC_KEY_PATH="/tmp/public.pem",
+    JWT_ENRIQUECIDO_PUBLIC_KEY_PATH="/run/secrets/public.pem",
     JWT_ENRIQUECIDO_KID="token-v1",
     JWT_ENRIQUECIDO_ALGORITMO="RS256",
 )
@@ -87,7 +87,7 @@ class TestListarChavesPublicas(SimpleTestCase):
         )
 
         mock_ler_arquivo.assert_called_once_with(
-            "/tmp/public.pem",
+            "/run/secrets/public.pem",
         )
 
 
