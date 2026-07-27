@@ -17,6 +17,9 @@ O SME-Identidade-Token-Microsservico complementa esse processo, sendo responsáv
 - manter projeções de autorização;
 - consolidar perfis e permissões;
 - compor atributos complementares (claims);
+- compor o token JWT enriquecido;
+- assinar os tokens utilizando RS256;
+- publicar as chaves públicas por meio do endpoint JWKS;
 - disponibilizar projeções para consumo pelos serviços da plataforma;
 - preservar compatibilidade com sistemas legados.
 
@@ -39,7 +42,9 @@ Dessa forma, o serviço separa claramente as responsabilidades entre autenticaç
                  | • Projeções             |
                  | • Perfis                |
                  | • Permissões            |
-                 | • Claims               |
+                 | • Claims                |
+                 | • JWT Enriquecido       |
+                 | • JWKS                  |
                  +-----------+-------------+
                              |
           +------------------+------------------+
@@ -55,6 +60,9 @@ O serviço possui as seguintes responsabilidades:
 - sincronizar projeções de autorização recebidas de sistemas externos;
 - persistir perfis, permissões e demais atributos de autorização;
 - disponibilizar consultas sobre as projeções armazenadas;
+- compor o token JWT enriquecido;
+- assinar os tokens utilizando RS256;
+- publicar as chaves públicas por meio do endpoint JWKS;
 - enriquecer informações utilizadas durante a composição de tokens;
 - reduzir o acoplamento entre os sistemas consumidores e o provedor de identidade.
 
@@ -79,3 +87,4 @@ A aplicação está organizada em domínios funcionais.
 | Core | Endpoints de infraestrutura e funcionalidades comuns da aplicação. |
 | Autenticação | Proteção dos endpoints por meio de autenticação via API Key. |
 | Perfil | Gerenciamento das projeções de usuários, perfis e permissões utilizadas na composição dos atributos de autorização. |
+| Tokens | Emissão, validação e publicação dos tokens JWT enriquecidos e gerenciamento das chaves de assinatura. |

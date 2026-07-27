@@ -12,10 +12,13 @@ Atuando como camada complementar ao Keycloak, o serviço desacopla regras de aut
 │   ├── core/           # cliente HTTP
 │   └── autenticacao/   # domínio autenticação: views, services, serializers
 │   └── perfil/         # domínio perfil: views, services, serializers, models
+│   └── tokens/         # Emissão, validação e publicação dos Tokens JWT
 ├── config/             # settings, urls, wsgi
+├── docs/               # Documentação Sphinx
 ├── requirements/
 │   ├── base.txt        # dependências de produção
 │   └── local.txt       # base + ferramentas de desenvolvimento
+├── scripts/            # Scripts auxiliares
 └── manage.py
 ```
 
@@ -42,10 +45,29 @@ Atuando como camada complementar ao Keycloak, o serviço desacopla regras de aut
 | `api/urls.py`        | Registro e roteamento das rotas do domínio de perfil. |
 | `models.py`          | Modelos responsáveis pelo armazenamento da projeção de usuários, perfis e permissões. |
 
+---
+
+## apps/tokens
+
+Domínio responsável pela emissão e validação dos Tokens JWT Enriquecidos.
+
+| Módulo | Responsabilidade |
+|---------|------------------|
+| `api/views.py` | Endpoints para emissão, validação e publicação do JWKS. |
+| `api/serializers.py` | Contratos de entrada e saída dos endpoints de Token. |
+| `api/urls.py` | Registro das rotas do domínio Tokens. |
+| `token_enriquecido.py` | Composição e assinatura do Token JWT Enriquecido. |
+| `libs/jwt_chaves.py` | Gerenciamento das chaves criptográficas utilizadas pelo serviço. |
+| `libs/jwks.py` | Construção do documento JWKS publicado pelo serviço. |
+| `libs/jwt_validacao.py` | Validação da assinatura e das claims dos Tokens JWT. |
+
+---
+
 ## Requisitos
 
 - Python 3.12+
 - Docker e Docker Compose
+- OpenSSL (apenas para geração das chaves em ambiente de desenvolvimento)
 
 ## Instalação para desenvolvimento
 
@@ -86,6 +108,11 @@ make run
 | `API_KEY` | - | Chave de autenticação utilizada para validar o acesso às APIs protegidas pela aplicação. |
 | `API_KEY_HEADER` | `X-API-Key` | Nome do cabeçalho HTTP utilizado para enviar a chave de autenticação nas requisições. |
 | `IDENTIDADE_TOKEN_DB_URL` | - | URL de conexão com o banco de dados. |
+| `JWT_ENRIQUECIDO_PRIVATE_KEY_PATH` | Caminho da chave privada utilizada para assinatura dos tokens. |
+| `JWT_ENRIQUECIDO_PUBLIC_KEY_PATH` | Caminho da chave pública publicada no JWKS. |
+| `JWT_ENRIQUECIDO_KID` | Identificador da chave utilizada no Header do JWT. |
+| `JWT_ENRIQUECIDO_ALGORITMO` | Algoritmo utilizado na assinatura dos tokens. |
+| `JWT_ENRIQUECIDO_TTL_SEGUNDOS` | Tempo de vida (TTL), em segundos, dos Tokens JWT Enriquecidos emitidos pelo serviço. |
 
 ## Atalhos Make
 
