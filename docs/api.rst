@@ -38,20 +38,27 @@ Perfil
 .. automodule:: apps.perfil.api.urls
    :members:
 
-Atributos complementares
--------------------------
+Tokens
+------
 
-.. automodule:: apps.atributos_complementares.models
+.. automodule:: apps.tokens.token_enriquecido
    :members:
 
-.. automodule:: apps.atributos_complementares.servicos
+.. automodule:: apps.tokens.libs.jwt_chaves
+   :members:
+   :no-index:
+
+.. automodule:: apps.tokens.libs.jwt_validacao
    :members:
 
-.. automodule:: apps.atributos_complementares.api.views
+.. automodule:: apps.tokens.libs.jwks
    :members:
 
-.. automodule:: apps.atributos_complementares.api.serializers
+.. automodule:: apps.tokens.api.views
    :members:
 
-.. automodule:: apps.atributos_complementares.api.urls
+.. automodule:: apps.tokens.api.serializers
+   :members:
+
+.. automodule:: apps.tokens.api.urls
    :members:

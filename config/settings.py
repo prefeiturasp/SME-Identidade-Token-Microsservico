@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "apps.autenticacao",
     "apps.perfil",
     "apps.atributos_complementares",
+    "apps.tokens",
 ]
 
 MIDDLEWARE = [
@@ -124,3 +125,13 @@ SPECTACULAR_SETTINGS = {
     },
     "SECURITY": [{"ApiKeyAuth": []}],
 }
+
+JWT_ENRIQUECIDO_PRIVATE_KEY_PATH = os.getenv(
+    "JWT_ENRIQUECIDO_PRIVATE_KEY_PATH"
+)
+JWT_ENRIQUECIDO_PUBLIC_KEY_PATH = os.getenv("JWT_ENRIQUECIDO_PUBLIC_KEY_PATH")
+JWT_ENRIQUECIDO_KID = os.getenv("JWT_ENRIQUECIDO_KID")
+JWT_ENRIQUECIDO_ALGORITMO = os.getenv("JWT_ENRIQUECIDO_ALGORITMO")
+JWT_ENRIQUECIDO_TTL_SEGUNDOS = int(
+    os.getenv("JWT_ENRIQUECIDO_TTL_SEGUNDOS", "28800")
+)
