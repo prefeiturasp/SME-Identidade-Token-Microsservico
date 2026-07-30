@@ -27,4 +27,5 @@ urlpatterns = [
     path(f"{API_PREFIX}", include("apps.core.api.urls")),
     path(f"{API_PREFIX}", include("apps.perfil.api.urls")),
     path(f"{API_PREFIX}", include("apps.atributos_complementares.api.urls")),
+    path(f"{API_PREFIX}", include("apps.tokens.api.urls")),
 ]

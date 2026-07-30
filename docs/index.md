@@ -11,6 +11,7 @@ Além da emissão de tokens enriquecidos, o serviço gerencia a persistência de
 :caption: Conteúdo
 
 arquitetura/visao_geral
+arquitetura/fluxo_token_enriquecido
 controle/index
 api
 ```

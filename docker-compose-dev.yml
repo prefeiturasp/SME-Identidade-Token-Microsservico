@@ -8,6 +8,7 @@ services:
 
     volumes:
       - .:/app
+      - ./dev-secrets/token-ms:/run/secrets/token-ms:ro
 
     env_file:
       - .env

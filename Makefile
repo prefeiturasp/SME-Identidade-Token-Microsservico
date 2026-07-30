@@ -29,6 +29,9 @@ help:
 	@echo "    make coverage         — relatório HTML em docs/_cov/"
 	@echo "    make schema           — gera schema OpenAPI em schema.yml"
 	@echo "    make docs             — gera documentação Sphinx em docs/_build/html/"
+	@echo ""
+	@echo "  Chaves JWT:"
+	@echo "    make gerar-chaves-rsa-dev  — gera chaves RSA para desenvolvimento"
 
 # ---------------------------------------------------------------------------
 # Ambiente
@@ -89,3 +92,10 @@ docs:
 
 docs-clean:
 	rm -rf docs/_build
+
+# ---------------------------------------------------------------------------
+# JWT Keys
+# ---------------------------------------------------------------------------
+
+gerar-chaves-rsa-dev:
+	./scripts/gerar-chaves-rsa-dev.sh
