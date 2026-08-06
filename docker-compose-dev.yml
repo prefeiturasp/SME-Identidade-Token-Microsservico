@@ -19,6 +19,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      keydb:
+        condition: service_healthy
 
     command: python manage.py runserver 0.0.0.0:${PORT_WEB:-8002}
 
@@ -48,6 +50,19 @@ services:
           "CMD-SHELL",
           "pg_isready -U ${POSTGRES_USER:-postgres} -d ${IDENTIDADE_TOKEN_DB_NAME:-identidade_token}"
         ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keydb:
+    image: eqalpha/keydb:latest
+    container_name: identidade_token_keydb
+
+    ports:
+      - "6379:6379"
+
+    healthcheck:
+      test: ["CMD", "keydb-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
