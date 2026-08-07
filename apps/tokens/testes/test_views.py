@@ -59,50 +59,32 @@ class TestJWKSView:
 class TestTokenEnriquecidoView:
     """Testes da view TokenEnriquecidoView."""
 
-    @patch(
-        "apps.tokens.api.views.compor_token_enriquecido",
-    )
-    @patch(
-        "apps.tokens.api.views.ProjecaoUsuario.objects",
-    )
+    @patch("apps.tokens.api.views.TokenEnriquecidoService.gerar")
     def test_deve_gerar_token_enriquecido(
         self,
-        mock_objects: MagicMock,
-        mock_compor_token: MagicMock,
+        mock_gerar: MagicMock,
     ) -> None:
-        """Deve gerar um token enriquecido."""
+        """Deve gerar um Token Enriquecido."""
         usuario_id = uuid4()
 
-        projecao_usuario = MagicMock()
+        resposta = {
+            "token": "token-jwt",
+            "data_expiracao": datetime.now(UTC),
+            "permissoes": [],
+        }
 
-        (
-            mock_objects.prefetch_related.return_value.filter.return_value.first.return_value
-        ) = projecao_usuario
+        mock_gerar.return_value = resposta
 
-        expiracao = datetime.now(UTC)
-
-        permissoes = [
-            {
-                "sistema_id": 1,
-                "sistema_nome": "CoreSSO",
-                "modulo_id": 3,
-                "modulo_nome": "Usuários",
-                "consultar": True,
-                "inserir": False,
-                "alterar": False,
-                "excluir": False,
-            }
-        ]
-
-        mock_compor_token.return_value = (
-            "token-jwt",
-            expiracao,
-            permissoes,
-        )
+        kc_user_id = uuid4()
 
         payload = {
-            "kc_user_id": "123",
+            "kc_user_id": str(kc_user_id),
             "username": "usuario",
+            "nome": "Usuário Teste",
+            "email": "usuario@sme.prefeitura.sp.gov.br",
+            "ativo": True,
+            "cpf": "12345678900",
+            "rf": "123456",
             "perfil": "professor",
         }
 
@@ -120,67 +102,25 @@ class TestTokenEnriquecidoView:
         )
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.json()["token"] == "token-jwt"
-        assert response.json()["data_expiracao"] is not None
-        assert response.json()["permissoes"] == permissoes
-
-        mock_compor_token.assert_called_once_with(
-            conta_keycloak=payload,
-            projecao_usuario=projecao_usuario,
-            perfil="professor",
-        )
-
-    @patch(
-        "apps.tokens.api.views.compor_token_enriquecido",
-    )
-    @patch(
-        "apps.tokens.api.views.ProjecaoUsuario.objects",
-    )
-    def test_deve_gerar_token_sem_projecao_usuario(
-        self,
-        mock_objects: MagicMock,
-        mock_compor_token: MagicMock,
-    ) -> None:
-        """Deve gerar token quando usuário não possui projeção."""
-        usuario_id = uuid4()
-
-        (
-            mock_objects.prefetch_related.return_value.filter.return_value.first.return_value
-        ) = None
-
-        mock_compor_token.return_value = (
-            "token-jwt",
-            datetime.now(UTC),
-            [],
-        )
-
-        payload = {
-            "kc_user_id": "123",
-            "username": "usuario",
+        assert response.json() == {
+            "token": "token-jwt",
+            "data_expiracao": response.json()["data_expiracao"],
+            "permissoes": [],
         }
 
-        client = criar_client()
-
-        response = client.post(
-            reverse(
-                "token-enriquecido",
-                kwargs={
-                    "usuario_id": usuario_id,
-                },
-            ),
-            payload,
-            format="json",
-        )
-
-        assert response.status_code == status.HTTP_200_OK
-        assert response.json()["token"] == "token-jwt"
-        assert response.json()["permissoes"] == []
-        assert response.json()["data_expiracao"] is not None
-
-        mock_compor_token.assert_called_once_with(
-            conta_keycloak=payload,
-            projecao_usuario=None,
-            perfil=None,
+        mock_gerar.assert_called_once_with(
+            usuario_id=usuario_id,
+            conta_keycloak={
+                "kc_user_id": kc_user_id,
+                "username": payload["username"],
+                "nome": payload["nome"],
+                "email": payload["email"],
+                "ativo": payload["ativo"],
+                "cpf": payload["cpf"],
+                "rf": payload["rf"],
+                "perfil": payload["perfil"],
+            },
+            perfil="professor",
         )
 
 
