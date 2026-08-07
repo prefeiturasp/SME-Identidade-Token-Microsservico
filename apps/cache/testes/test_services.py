@@ -7,7 +7,7 @@ from django.test import SimpleTestCase
 from apps.cache.services import CacheService
 
 
-class CacheServiceTest(SimpleTestCase):
+class TestCacheService(SimpleTestCase):
     """Testes do serviço responsável pelas operações de cache."""
 
     @patch("apps.cache.services.cache.get")
