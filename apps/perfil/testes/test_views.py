@@ -110,13 +110,13 @@ class TestProjecaoUsuarioView(TestCase):
         assert len(response.json()["perfis"]) == 1
         assert len(response.json()["permissoes"]) == 1
 
-    def test_deve_retornar_404_quando_usuario_nao_existir(
+    def test_deve_retornar_400_quando_usuario_nao_existir(
         self,
     ) -> None:
-        """Deve retornar 404 quando a projeção não existir."""
+        """Deve retornar 400 quando a projeção não existir."""
         response = self.client.get(self.url)
 
-        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == {
             "detail": "Projeção de usuário não encontrada.",
         }

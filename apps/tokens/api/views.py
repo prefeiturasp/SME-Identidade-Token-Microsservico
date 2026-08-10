@@ -1,5 +1,6 @@
 """Views responsáveis pela publicação do endpoint JWKS."""
 
+import logging
 from uuid import UUID
 
 import jwt
@@ -13,7 +14,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.perfil.models import ProjecaoUsuario
 from apps.tokens.api.serializers import (
     TokenEnriquecidoRequestSerializer,
     TokenEnriquecidoResponseSerializer,
@@ -22,7 +22,9 @@ from apps.tokens.api.serializers import (
 )
 from apps.tokens.libs.jwks import obter_jwks
 from apps.tokens.libs.jwt_validacao import validar_token
-from apps.tokens.token_enriquecido import compor_token_enriquecido
+from apps.tokens.services import TokenEnriquecidoService
+
+logger = logging.getLogger(__name__)
 
 _TAG = ["Tokens"]
 
@@ -52,6 +54,8 @@ class JWKSView(APIView):
         Returns:
             Resposta contendo o documento JWKS.
         """
+        logger.info("Consulta ao endpoint JWKS.")
+
         return Response(obter_jwks())
 
 
@@ -90,31 +94,28 @@ class TokenEnriquecidoView(APIView):
             Resposta contendo o token enriquecido gerado, sua data de
             expiração e as permissões associadas ao usuário.
         """
-        conta_keycloak = request.data
-        perfil = request.data.get("perfil")
+        serializer = TokenEnriquecidoRequestSerializer(
+            data=request.data,
+        )
+        serializer.is_valid(raise_exception=True)
 
-        projecao_usuario = (
-            ProjecaoUsuario.objects.prefetch_related(
-                "perfis",
-                "modulos_permissao",
-            )
-            .filter(usuario_id=usuario_id)
-            .first()
+        logger.info(
+            "Solicitação de geração de Token Enriquecido para o usuário %s.",
+            usuario_id,
         )
 
-        token, expiracao, permissoes = compor_token_enriquecido(
-            conta_keycloak=conta_keycloak,
-            projecao_usuario=projecao_usuario,
-            perfil=perfil,
+        resposta = TokenEnriquecidoService.gerar(
+            usuario_id=usuario_id,
+            conta_keycloak=serializer.validated_data,
+            perfil=serializer.validated_data["perfil"],
         )
 
-        return Response(
-            {
-                "token": token,
-                "data_expiracao": expiracao,
-                "permissoes": permissoes,
-            }
+        logger.info(
+            "Token Enriquecido gerado para o usuário %s.",
+            usuario_id,
         )
+
+        return Response(resposta)
 
 
 class ValidarTokenView(APIView):
@@ -150,7 +151,6 @@ class ValidarTokenView(APIView):
         serializer = ValidarTokenRequestSerializer(
             data=request.data,
         )
-
         serializer.is_valid(raise_exception=True)
 
         token = serializer.validated_data["token"]
@@ -159,6 +159,10 @@ class ValidarTokenView(APIView):
             claims = validar_token(token)
 
         except jwt.ExpiredSignatureError:
+            logger.warning(
+                "Falha na validação do Token Enriquecido: token expirado.",
+            )
+
             return Response(
                 {
                     "valido": False,
@@ -168,6 +172,10 @@ class ValidarTokenView(APIView):
             )
 
         except jwt.InvalidTokenError:
+            logger.warning(
+                "Falha na validação do Token Enriquecido: token inválido.",
+            )
+
             return Response(
                 {
                     "valido": False,
@@ -175,6 +183,10 @@ class ValidarTokenView(APIView):
                 },
                 status=status.HTTP_401_UNAUTHORIZED,
             )
+
+        logger.info(
+            "Token Enriquecido validado com sucesso.",
+        )
 
         return Response(
             {

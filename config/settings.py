@@ -16,6 +16,7 @@ DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
 ALLOWED_HOSTS = [
     host.strip() for host in os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",")
 ]
+NIVEL_LOG = os.getenv("NIVEL_LOG", "INFO")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -31,6 +32,7 @@ INSTALLED_APPS = [
     "apps.perfil",
     "apps.atributos_complementares",
     "apps.tokens",
+    "apps.cache",
 ]
 
 MIDDLEWARE = [
@@ -135,3 +137,51 @@ JWT_ENRIQUECIDO_ALGORITMO = os.getenv("JWT_ENRIQUECIDO_ALGORITMO")
 JWT_ENRIQUECIDO_TTL_SEGUNDOS = int(
     os.getenv("JWT_ENRIQUECIDO_TTL_SEGUNDOS", "28800")
 )
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.getenv("URL_KEYDB", "redis://keydb:6379/0"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "TIMEOUT": int(os.getenv("KEYDB_DEFAULT_TIMEOUT", "300")),
+    }
+}
+
+# ---------------------------------------------------------------------------
+# Logging (python-json-logger — padrão Ateliê)
+# ---------------------------------------------------------------------------
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "json": {
+            "()": "pythonjsonlogger.json.JsonFormatter",
+            "fmt": "%(asctime)s %(levelname)s %(name)s %(message)s",
+            "rename_fields": {
+                "asctime": "timestamp",
+                "levelname": "nivel",
+                "name": "logger",
+            },
+            "json_ensure_ascii": False,
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "json",
+        },
+    },
+    "loggers": {
+        "identidade_token": {
+            "handlers": ["console"],
+            "level": NIVEL_LOG,
+            "propagate": False,
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": NIVEL_LOG,
+    },
+}
