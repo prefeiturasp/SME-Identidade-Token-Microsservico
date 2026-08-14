@@ -1,5 +1,6 @@
 """Views da API da aplicação perfil."""
 
+import logging
 from uuid import UUID
 
 from drf_spectacular.utils import (
@@ -16,6 +17,9 @@ from apps.perfil.api.serializers import (
     ProjecaoUsuarioSerializer,
 )
 from apps.perfil.models import ProjecaoUsuario
+from apps.tokens.services import TokenEnriquecidoService
+
+logger = logging.getLogger(__name__)
 
 _TAG = ["Perfil"]
 
@@ -32,7 +36,7 @@ class ProjecaoUsuarioView(APIView):
         ),
         responses={
             status.HTTP_200_OK: ProjecaoUsuarioReadSerializer,
-            status.HTTP_404_NOT_FOUND: OpenApiResponse(
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(
                 description="Projeção de usuário não encontrada.",
             ),
         },
@@ -50,7 +54,7 @@ class ProjecaoUsuarioView(APIView):
 
         Returns:
             Resposta HTTP contendo a projeção de um usuário.
-            Retorna 404 caso a projeção não seja encontrada.
+            Retorna 400 caso a projeção não seja encontrada.
         """
         try:
             usuario = ProjecaoUsuario.objects.prefetch_related(
@@ -59,10 +63,20 @@ class ProjecaoUsuarioView(APIView):
             ).get(usuario_id=usuario_id)
 
         except ProjecaoUsuario.DoesNotExist:
+            logger.warning(
+                "Projeção do usuário %s não encontrada.",
+                usuario_id,
+            )
+
             return Response(
                 {"detail": "Projeção de usuário não encontrada."},
-                status=status.HTTP_404_NOT_FOUND,
+                status=status.HTTP_400_BAD_REQUEST,
             )
+
+        logger.info(
+            "Projeção do usuário %s consultada com sucesso.",
+            usuario_id,
+        )
 
         serializer = ProjecaoUsuarioReadSerializer(usuario)
 
@@ -102,13 +116,22 @@ class ProjecaoUsuarioView(APIView):
         serializer = ProjecaoUsuarioSerializer(
             data=request.data,
         )
-
         serializer.is_valid(raise_exception=True)
+
+        logger.info(
+            "Iniciando sincronização da projeção do usuário %s.",
+            usuario_id,
+        )
 
         try:
             serializer.save(usuario_id=usuario_id)
 
         except Exception:
+            logger.exception(
+                "Falha ao sincronizar a projeção do usuário %s.",
+                usuario_id,
+            )
+
             return Response(
                 data={
                     "detail": (
@@ -117,5 +140,12 @@ class ProjecaoUsuarioView(APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        TokenEnriquecidoService.invalidar(usuario_id)
+
+        logger.info(
+            "Projeção do usuário %s sincronizada com sucesso.",
+            usuario_id,
+        )
 
         return Response(status=status.HTTP_200_OK)

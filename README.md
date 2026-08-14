@@ -13,6 +13,7 @@ Atuando como camada complementar ao Keycloak, o serviço desacopla regras de aut
 │   └── autenticacao/   # domínio autenticação: views, services, serializers
 │   └── perfil/         # domínio perfil: views, services, serializers, models
 │   └── tokens/         # Emissão, validação e publicação dos Tokens JWT
+│   └── cache/          # camada de cache utilizando KeyDB
 ├── config/             # settings, urls, wsgi
 ├── docs/               # Documentação Sphinx
 ├── requirements/
@@ -56,10 +57,22 @@ Domínio responsável pela emissão e validação dos Tokens JWT Enriquecidos.
 | `api/views.py` | Endpoints para emissão, validação e publicação do JWKS. |
 | `api/serializers.py` | Contratos de entrada e saída dos endpoints de Token. |
 | `api/urls.py` | Registro das rotas do domínio Tokens. |
+| `services.py` | Orquestração da geração do Token JWT Enriquecido, incluindo integração com a camada de cache. |
 | `token_enriquecido.py` | Composição e assinatura do Token JWT Enriquecido. |
 | `libs/jwt_chaves.py` | Gerenciamento das chaves criptográficas utilizadas pelo serviço. |
 | `libs/jwks.py` | Construção do documento JWKS publicado pelo serviço. |
 | `libs/jwt_validacao.py` | Validação da assinatura e das claims dos Tokens JWT. |
+
+---
+
+## apps/cache
+
+Domínio responsável pelo gerenciamento da camada de cache utilizando KeyDB.
+
+| Módulo | Responsabilidade |
+|---------|------------------|
+| `services.py` | Serviço responsável pelo armazenamento, recuperação e invalidação dos dados em cache. |
+| `chaves.py` | Centralização da geração das chaves utilizadas para identificação dos registros armazenados. |
 
 ---
 
@@ -113,6 +126,8 @@ make run
 | `JWT_ENRIQUECIDO_KID` | Identificador da chave utilizada no Header do JWT. |
 | `JWT_ENRIQUECIDO_ALGORITMO` | Algoritmo utilizado na assinatura dos tokens. |
 | `JWT_ENRIQUECIDO_TTL_SEGUNDOS` | Tempo de vida (TTL), em segundos, dos Tokens JWT Enriquecidos emitidos pelo serviço. |
+| `URL_KEYDB` | `redis://keydb:6379/0` | URL de conexão com o serviço KeyDB utilizado pela camada de cache para armazenamento e recuperação dos Tokens JWT Enriquecidos. |
+| `KEYDB_DEFAULT_TIMEOUT` | `300` | Tempo de vida (TTL), em segundos, das entradas armazenadas no cache KeyDB. Após esse período, os registros expiram automaticamente. |
 
 ## Atalhos Make
 

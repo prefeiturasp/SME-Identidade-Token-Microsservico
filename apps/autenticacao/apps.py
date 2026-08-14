@@ -8,3 +8,7 @@ class AutenticacaoConfig(AppConfig):
 
     name = "apps.autenticacao"
     label = "autenticacao"
+
+    def ready(self) -> None:
+        """Registra a extensão de schema OpenAPI da AutenticacaoApiKey."""
+        from apps.autenticacao import schema  # noqa: F401

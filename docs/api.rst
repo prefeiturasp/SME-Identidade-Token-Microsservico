@@ -1,12 +1,12 @@
 Referência de código
-====================
+======================
 
 Esta página publica as docstrings dos principais módulos do projeto. Detalhes
 de endpoints, status HTTP e contratos externos devem permanecer no OpenAPI ou
 em páginas técnicas específicas.
 
 Core
-----
+-------
 
 .. automodule:: apps.core.api.views
    :members:
@@ -18,13 +18,13 @@ Core
    :members:
 
 Autenticação
-------------
+---------------
 
 .. automodule:: apps.autenticacao.api.autenticacao
    :members:
 
 Perfil
-------
+---------
 
 .. automodule:: apps.perfil.models
    :members:
@@ -38,8 +38,20 @@ Perfil
 .. automodule:: apps.perfil.api.urls
    :members:
 
+Cache
+--------
+
+.. automodule:: apps.cache.chaves
+   :members:
+
+.. automodule:: apps.cache.services
+   :members:
+
 Tokens
-------
+---------
+
+.. automodule:: apps.tokens.services
+   :members:
 
 .. automodule:: apps.tokens.token_enriquecido
    :members:

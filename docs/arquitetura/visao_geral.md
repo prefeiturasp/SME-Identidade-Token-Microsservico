@@ -8,22 +8,26 @@ O serviço atua como uma camada complementar ao Keycloak, centralizando informa�
 
 Seu principal objetivo é desacoplar regras de autorização, projeções legadas e atributos corporativos do provedor de identidade, permitindo que esses dados evoluam independentemente do processo de autenticação.
 
+Além disso, o serviço utiliza uma camada de cache baseada em **KeyDB** para otimizar a geração do Token Enriquecido, reduzindo consultas repetidas às projeções de autorização e melhorando o tempo de resposta das requisições.
+
 ## Papel na arquitetura
 
 O Keycloak permanece como a autoridade responsável pela identidade, autenticação e protocolos de segurança da plataforma.
 
 O SME-Identidade-Token-Microsservico complementa esse processo, sendo responsável por:
 
-- manter projeções de autorização;
-- consolidar perfis e permissões;
-- compor atributos complementares (claims);
-- compor o token JWT enriquecido;
-- assinar os tokens utilizando RS256;
-- publicar as chaves públicas por meio do endpoint JWKS;
-- disponibilizar projeções para consumo pelos serviços da plataforma;
-- preservar compatibilidade com sistemas legados.
+* manter projeções de autorização;
+* consolidar perfis e permissões;
+* compor atributos complementares (claims);
+* compor o token JWT enriquecido;
+* armazenar temporariamente tokens enriquecidos em cache utilizando KeyDB;
+* invalidar automaticamente o cache quando houver atualização das projeções de autorização;
+* assinar os tokens utilizando RS256;
+* publicar as chaves públicas por meio do endpoint JWKS;
+* disponibilizar projeções para consumo pelos serviços da plataforma;
+* preservar compatibilidade com sistemas legados.
 
-Dessa forma, o serviço separa claramente as responsabilidades entre autenticação e autorização complementar.
+Dessa forma, o serviço separa claramente as responsabilidades entre autenticação e autorização complementar, utilizando uma camada de cache para otimizar operações de leitura sem alterar a origem dos dados persistidos.
 
 ## Fluxo
 
@@ -44,6 +48,7 @@ Dessa forma, o serviço separa claramente as responsabilidades entre autenticaç
                  | • Permissões            |
                  | • Claims                |
                  | • JWT Enriquecido       |
+                 | • Cache (KeyDB)         |
                  | • JWKS                  |
                  +-----------+-------------+
                              |
@@ -57,34 +62,39 @@ Dessa forma, o serviço separa claramente as responsabilidades entre autenticaç
 
 O serviço possui as seguintes responsabilidades:
 
-- sincronizar projeções de autorização recebidas de sistemas externos;
-- persistir perfis, permissões e demais atributos de autorização;
-- disponibilizar consultas sobre as projeções armazenadas;
-- compor o token JWT enriquecido;
-- assinar os tokens utilizando RS256;
-- publicar as chaves públicas por meio do endpoint JWKS;
-- enriquecer informações utilizadas durante a composição de tokens;
-- reduzir o acoplamento entre os sistemas consumidores e o provedor de identidade.
+* sincronizar projeções de autorização recebidas de sistemas externos;
+* persistir perfis, permissões e demais atributos de autorização;
+* disponibilizar consultas sobre as projeções armazenadas;
+* compor o token JWT enriquecido;
+* reutilizar tokens enriquecidos armazenados em cache quando disponíveis;
+* invalidar entradas de cache associadas às projeções atualizadas;
+* assinar os tokens utilizando RS256;
+* publicar as chaves públicas por meio do endpoint JWKS;
+* enriquecer informações utilizadas durante a composição de tokens;
+* reduzir o acoplamento entre os sistemas consumidores e o provedor de identidade.
 
 ## Limites de responsabilidade
 
 O SME-Identidade-Token-Microsservico **não** é responsável por:
 
-- autenticar usuários;
-- validar credenciais;
-- emitir identidade oficial;
-- gerenciar sessões;
-- substituir o Keycloak como Identity Provider (IdP).
+* autenticar usuários;
+* validar credenciais;
+* emitir identidade oficial;
+* gerenciar sessões;
+* substituir o Keycloak como Identity Provider (IdP).
 
 Essas responsabilidades permanecem sob domínio do Keycloak.
+
+A camada de cache não substitui a persistência das projeções de autorização, sendo utilizada exclusivamente como mecanismo de otimização para reduzir o custo de processamento da geração do Token Enriquecido.
 
 ## Domínios da aplicação
 
 A aplicação está organizada em domínios funcionais.
 
-| Domínio | Responsabilidade |
-|---------|------------------|
-| Core | Endpoints de infraestrutura e funcionalidades comuns da aplicação. |
-| Autenticação | Proteção dos endpoints por meio de autenticação via API Key. |
-| Perfil | Gerenciamento das projeções de usuários, perfis e permissões utilizadas na composição dos atributos de autorização. |
-| Tokens | Emissão, validação e publicação dos tokens JWT enriquecidos e gerenciamento das chaves de assinatura. |
+| Domínio      | Responsabilidade                                                                                                                                                                     |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Core         | Endpoints de infraestrutura e funcionalidades comuns da aplicação.                                                                                                                   |
+| Autenticação | Proteção dos endpoints por meio de autenticação via API Key.                                                                                                                         |
+| Perfil       | Gerenciamento das projeções de usuários, perfis e permissões utilizadas na composição dos atributos de autorização.                                                                  |
+| Tokens       | Emissão, validação e publicação dos tokens JWT enriquecidos e gerenciamento das chaves de assinatura.                                                                                |
+| Cache        | Gerenciamento da camada de cache baseada em KeyDB, incluindo geração de chaves, armazenamento, recuperação e invalidação das entradas utilizadas na composição do Token Enriquecido. |
