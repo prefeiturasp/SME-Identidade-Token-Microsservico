@@ -14,6 +14,36 @@ from apps.tokens.libs.jwt_chaves import obter_chave_privada
 _ISSUER = "sme-token-ms"
 
 
+def _vinculos_funcionais(
+    projecao_usuario: ProjecaoUsuario,
+) -> list[dict[str, Any]]:
+    """Monta a claim de vínculos funcionais vigentes de um servidor.
+
+    O vínculo entre ``ProjecaoUsuario`` e ``AtributoComplementarUsuario``
+    é best-effort (resolvido por RF/CPF em ``servicos.sincronizar_lote``
+    do app ``atributos_complementares`` — pode não existir ainda),
+    então o resultado é vazio quando não há atributo complementar
+    associado. Um servidor pode ter múltiplos vínculos simultâneos
+    (cargo base, cargo sobreposto, função/atividade), por isso a claim
+    é uma lista, no mesmo padrão de ``perfis``/``permissoes``.
+    """
+    atributo = projecao_usuario.atributos_complementares.first()
+    if atributo is None:
+        return []
+    return [
+        {
+            "tipo_vinculo": vinculo.tipo_vinculo,
+            "cargo_codigo": vinculo.cargo_codigo,
+            "cargo_nome": vinculo.cargo_nome,
+            "unidade_codigo": vinculo.unidade_codigo,
+            "unidade_nome": vinculo.unidade_nome,
+            "dre_codigo": vinculo.dre_codigo,
+            "situacao": vinculo.situacao,
+        }
+        for vinculo in atributo.vinculos.filter(vigente=True)
+    ]
+
+
 def compor_token_enriquecido(
     conta_keycloak: dict[str, Any],
     projecao_usuario: ProjecaoUsuario | None,
@@ -56,6 +86,7 @@ def compor_token_enriquecido(
                 "situacao": projecao_usuario.situacao,
                 "dre_codigo": projecao_usuario.dre_codigo,
                 "contrato_externo": projecao_usuario.contrato_externo,
+                "vinculos": _vinculos_funcionais(projecao_usuario),
                 "perfis": [
                     {
                         "id": str(perfil_usuario.id),

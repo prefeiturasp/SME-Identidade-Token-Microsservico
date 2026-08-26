@@ -5,7 +5,10 @@ from uuid import UUID
 
 from django.db import models as django_models
 
-from apps.atributos_complementares.models import AtributoComplementarUsuario
+from apps.atributos_complementares.models import (
+    AtributoComplementarUsuario,
+    VinculoAtributoComplementar,
+)
 from apps.perfil.models import ProjecaoUsuario
 
 
@@ -46,6 +49,42 @@ def _localizar_projecao(dados: dict[str, Any]) -> ProjecaoUsuario | None:
     return ProjecaoUsuario.objects.filter(filtro).first()
 
 
+def _sincronizar_vinculos(
+    atributo: AtributoComplementarUsuario, vinculos: list[dict[str, Any]]
+) -> None:
+    """Sincroniza os vínculos funcionais de um atributo complementar.
+
+    Estratégia "replace": remove vínculos existentes que não vieram no
+    payload atual e faz upsert dos que vieram, por
+    ``(atributo, tipo_vinculo, codigo_vinculo_origem)`` — mesma chave
+    natural da ``UniqueConstraint`` do model, para que reenvios do ETL
+    sejam idempotentes (reenviar o mesmo vínculo atualiza o mesmo
+    registro; um vínculo que deixou de vir é removido).
+    """
+    chaves_recebidas = {
+        (v["tipo_vinculo"], v["codigo_vinculo_origem"]) for v in vinculos
+    }
+    for vinculo_existente in atributo.vinculos.all():
+        chave_existente = (
+            vinculo_existente.tipo_vinculo,
+            vinculo_existente.codigo_vinculo_origem,
+        )
+        if chave_existente not in chaves_recebidas:
+            vinculo_existente.delete()
+
+    for dados_vinculo in vinculos:
+        VinculoAtributoComplementar.objects.update_or_create(
+            atributo=atributo,
+            tipo_vinculo=dados_vinculo["tipo_vinculo"],
+            codigo_vinculo_origem=dados_vinculo["codigo_vinculo_origem"],
+            defaults={
+                campo: valor
+                for campo, valor in dados_vinculo.items()
+                if campo not in ("tipo_vinculo", "codigo_vinculo_origem")
+            },
+        )
+
+
 def sincronizar_lote(
     usuarios: list[dict[str, Any]],
     *,
@@ -68,6 +107,7 @@ def sincronizar_lote(
     for dados in usuarios:
         chave = _identificador_natural(dados)
         projecao = _localizar_projecao(dados)
+        vinculos = dados.pop("vinculos", []) or []
 
         campos: dict[str, Any] = {
             campo: valor
@@ -77,10 +117,13 @@ def sincronizar_lote(
         campos["usuario"] = projecao
         campos["id_execucao"] = id_execucao
 
-        _, foi_criado = AtributoComplementarUsuario.objects.update_or_create(
-            defaults=campos,
-            **chave,
+        atributo, foi_criado = (
+            AtributoComplementarUsuario.objects.update_or_create(
+                defaults=campos,
+                **chave,
+            )
         )
+        _sincronizar_vinculos(atributo, vinculos)
 
         if foi_criado:
             criados += 1
