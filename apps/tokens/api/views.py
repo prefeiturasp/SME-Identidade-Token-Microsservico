@@ -107,7 +107,7 @@ class TokenEnriquecidoView(APIView):
         resposta = TokenEnriquecidoService.gerar(
             usuario_id=usuario_id,
             conta_keycloak=serializer.validated_data,
-            perfil=serializer.validated_data["perfil"],
+            perfil=serializer.validated_data.get("perfil"),
         )
 
         logger.info(
