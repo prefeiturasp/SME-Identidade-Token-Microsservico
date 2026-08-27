@@ -123,6 +123,112 @@ class TestTokenEnriquecidoView:
             perfil="professor",
         )
 
+    @patch("apps.tokens.api.views.TokenEnriquecidoService.gerar")
+    def test_deve_gerar_token_sem_perfil_cpf_e_rf_no_payload(
+        self,
+        mock_gerar: MagicMock,
+    ) -> None:
+        """Reproduz o payload real enviado pelo Gateway no login.
+
+        O Gateway chama este endpoint logo após autenticar no
+        Keycloak, sem que o usuário tenha escolhido um perfil ainda
+        — e ``cpf``/``rf`` podem não existir como atributo do
+        usuário no Keycloak. Nenhum dos três deve ser obrigatório.
+        """
+        usuario_id = uuid4()
+        kc_user_id = uuid4()
+
+        mock_gerar.return_value = {
+            "token": "token-jwt",
+            "data_expiracao": datetime.now(UTC),
+            "permissoes": [],
+        }
+
+        payload = {
+            "kc_user_id": str(kc_user_id),
+            "username": "usuario",
+            "nome": "Usuário Teste",
+            "email": "usuario@sme.prefeitura.sp.gov.br",
+            "ativo": True,
+        }
+
+        client = criar_client()
+
+        response = client.post(
+            reverse(
+                "token-enriquecido",
+                kwargs={"usuario_id": usuario_id},
+            ),
+            payload,
+            format="json",
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        mock_gerar.assert_called_once_with(
+            usuario_id=usuario_id,
+            conta_keycloak={
+                "kc_user_id": kc_user_id,
+                "username": payload["username"],
+                "nome": payload["nome"],
+                "email": payload["email"],
+                "ativo": payload["ativo"],
+            },
+            perfil=None,
+        )
+
+    @patch("apps.tokens.api.views.TokenEnriquecidoService.gerar")
+    def test_deve_gerar_token_com_perfil_cpf_e_rf_nulos(
+        self,
+        mock_gerar: MagicMock,
+    ) -> None:
+        """Mesmo cenário do Gateway, mas com os campos enviados como null."""
+        usuario_id = uuid4()
+        kc_user_id = uuid4()
+
+        mock_gerar.return_value = {
+            "token": "token-jwt",
+            "data_expiracao": datetime.now(UTC),
+            "permissoes": [],
+        }
+
+        payload = {
+            "kc_user_id": str(kc_user_id),
+            "username": "usuario",
+            "nome": "Usuário Teste",
+            "email": "usuario@sme.prefeitura.sp.gov.br",
+            "ativo": True,
+            "cpf": None,
+            "rf": None,
+            "perfil": None,
+        }
+
+        client = criar_client()
+
+        response = client.post(
+            reverse(
+                "token-enriquecido",
+                kwargs={"usuario_id": usuario_id},
+            ),
+            payload,
+            format="json",
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        mock_gerar.assert_called_once_with(
+            usuario_id=usuario_id,
+            conta_keycloak={
+                "kc_user_id": kc_user_id,
+                "username": payload["username"],
+                "nome": payload["nome"],
+                "email": payload["email"],
+                "ativo": payload["ativo"],
+                "cpf": None,
+                "rf": None,
+                "perfil": None,
+            },
+            perfil=None,
+        )
+
 
 class TestValidarTokenView:
     """Testes da view ValidarTokenView."""
