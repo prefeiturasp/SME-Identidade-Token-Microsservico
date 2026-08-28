@@ -208,11 +208,12 @@ O Token JWT Enriquecido reúne informações provenientes do Keycloak e das proj
 | `rf`, `cpf`                                          | Keycloak (sobrescritos pela projeção do Token-MS, quando disponível) |
 | `nome`, `situacao`, `dre_codigo`, `contrato_externo` | Token-MS                                                             |
 | `perfis`, `permissoes`                               | Token-MS                                                             |
+| `vinculos`                                           | Token-MS — vínculos funcionais vigentes do servidor (cargo base, cargo sobreposto, função/atividade), publicados pelo ETL |
 | `perfilSelecionado`                                  | Informado quando um perfil é selecionado durante a emissão do token  |
 | `iss`                                                | Emissor do token                                                     |
 | `iat`, `exp`                                         | Emissão e expiração                                                  |
 
-Caso não exista projeção para o usuário, os atributos provenientes do Token-MS poderão estar ausentes ou conter listas vazias.
+Caso não exista projeção para o usuário, os atributos provenientes do Token-MS poderão estar ausentes ou conter listas vazias. A claim `vinculos` também vem como lista vazia quando o usuário não tem atributo complementar sincronizado (ex.: aluno, terceiro, ou servidor cuja identidade ainda não passou pelo push-batch do ETL).
 
 ---
 

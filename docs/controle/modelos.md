@@ -1,6 +1,6 @@
 # Modelos
 
-Esta seção descreve os modelos persistidos pelo **SME-Identidade-Token-Microsservico**, responsáveis por armazenar a projeção de autorização dos usuários.
+Esta seção descreve os modelos persistidos pelo **SME-Identidade-Token-Microsservico**, responsáveis por armazenar a projeção de autorização dos usuários e os atributos complementares publicados pelo ETL.
 
 Os modelos representam as informações utilizadas para compor e disponibilizar atributos de autorização consumidos pelos sistemas da plataforma.
 
@@ -11,10 +11,14 @@ ProjecaoUsuario
         │
         ├──────────► PerfilUsuario
         │
-        └──────────► PermissaoUsuario
+        └──────────► ModuloPermissaoUsuario
+
+AtributoComplementarUsuario (associado a ProjecaoUsuario por RF/CPF)
+        │
+        └──────────► VinculoAtributoComplementar
 ```
 
-Cada usuário possui uma projeção de autorização, composta por seus perfis e permissões.
+Cada usuário possui uma projeção de autorização, composta por seus perfis e permissões. Separadamente, o ETL publica atributos complementares (identidade e vínculos funcionais) que se associam à projeção de forma oportunista, quando ela existe.
 
 ---
 
@@ -59,11 +63,11 @@ Cada perfil identifica um contexto de atuação ou papel desempenhado pelo usuá
 
 ---
 
-# PermissaoUsuario
+# ModuloPermissaoUsuario
 
-Representa uma permissão concedida a um usuário.
+Representa uma permissão CRUD concedida a um usuário para um módulo de um sistema.
 
-As permissões definem as operações autorizadas para determinado usuário e complementam os perfis atribuídos.
+A permissão é concedida por sistema e módulo, com quatro ações independentes — a granularidade real é (sistema, módulo, ação), não um código de permissão único. A unicidade é sempre pelo par `(sistema_id, modulo_id)`, já que `modulo_id` sozinho pode se repetir entre sistemas diferentes.
 
 ## Campos da permissão
 
@@ -71,5 +75,58 @@ As permissões definem as operações autorizadas para determinado usuário e co
 |-------|------|-----------|
 | `id` | UUID | Identificador único da permissão. |
 | `usuario` | FK | Referência para a projeção do usuário. |
-| `codigo` | Integer | Código identificador da permissão. |
-| `descricao` | String | Descrição da permissão. |
+| `sistema_id` | Integer | Identificador do sistema. |
+| `sistema_nome` | String | Nome do sistema. |
+| `modulo_id` | Integer | Identificador do módulo (único apenas em conjunto com `sistema_id`). |
+| `modulo_nome` | String | Nome do módulo. |
+| `consultar` | Boolean | Permissão de consulta no módulo. |
+| `inserir` | Boolean | Permissão de inserção no módulo. |
+| `alterar` | Boolean | Permissão de alteração no módulo. |
+| `excluir` | Boolean | Permissão de exclusão no módulo. |
+
+---
+
+# AtributoComplementarUsuario
+
+Registra os atributos complementares de um usuário, publicados em lote pelo ETL (endpoint `etl/push-batch`) a partir das fontes legadas.
+
+Identifica o usuário por RF, CPF ou matrícula. O payload de origem não carrega o identificador do usuário na plataforma, então o vínculo com `ProjecaoUsuario` é resolvido de forma oportunista (por RF ou CPF) e pode ficar nulo até essa projeção existir.
+
+## Campos do atributo complementar
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | UUID | Identificador único do registro. |
+| `usuario` | FK (opcional) | Referência para a projeção do usuário, quando resolvida. |
+| `rf`, `cpf`, `matricula` | String | Identificadores naturais do usuário na origem. |
+| `nome`, `email` | String | Dados de identidade. |
+| `tipo_usuario` | String | Tipo inferido a partir da fonte (servidor, aluno, terceiro). |
+| `cargo`, `funcao`, `unidade`, `unidade_codigo`, `dre`, `ue` | String | Atributos escalares de outros tipos de usuário (ex.: aluno) — para servidor, esse dado vem de `vinculos`, não desses campos. |
+| `cod_escola`, `turma` | String | Atributos específicos de aluno. |
+| `tipo_acesso` | String | Atributo específico de terceiro. |
+| `situacao`, `fonte`, `id_execucao` | String/UUID | Metadados de origem e execução do ETL. |
+| `criado_em`, `atualizado_em` | DateTime | Datas de controle do registro. |
+
+---
+
+# VinculoAtributoComplementar
+
+Representa um vínculo funcional vigente de um servidor (cargo base, cargo sobreposto/comissionado ou função/atividade).
+
+Um servidor pode ter múltiplos vínculos simultâneos e independentes — inclusive mais de um cargo base ao mesmo tempo — cada um com seu próprio cargo e sua própria unidade/DRE, por isso é modelado como tabela filha de `AtributoComplementarUsuario` (1 atributo → N vínculos), não como campos escalares. A chave `(atributo, tipo_vinculo, codigo_vinculo_origem)` é única, usada para upsert idempotente nos reenvios do ETL.
+
+## Campos do vínculo
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| `id` | UUID | Identificador único do vínculo. |
+| `atributo` | FK | Referência para o atributo complementar do usuário. |
+| `tipo_vinculo` | String | Tipo do vínculo: `cargo_base`, `cargo_sobreposto` ou `funcao_atividade`. |
+| `codigo_vinculo_origem` | String | Chave natural do vínculo na origem, usada para upsert idempotente. |
+| `cargo_codigo`, `cargo_nome` | String | Identificação do cargo. |
+| `unidade_codigo`, `unidade_nome` | String | Identificação da unidade de lotação do vínculo. |
+| `dre_codigo` | String | Código da DRE responsável pela unidade do vínculo. |
+| `situacao` | String | Situação do vínculo, quando disponível na origem. |
+| `data_inicio` | String | Data de início do vínculo, quando disponível na origem. |
+| `vigente` | Boolean | Indica se o vínculo está vigente. |
+| `criado_em`, `atualizado_em` | DateTime | Datas de controle do registro. |

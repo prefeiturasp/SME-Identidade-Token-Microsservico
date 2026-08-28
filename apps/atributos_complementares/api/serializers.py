@@ -5,6 +5,40 @@ from typing import Any
 from rest_framework import serializers
 
 
+class VinculoEntradaSerializer(serializers.Serializer):
+    """Representa um vínculo funcional de servidor do lote.
+
+    Um servidor pode ter múltiplos vínculos simultâneos (cargo base,
+    cargo sobreposto, função/atividade) — ver
+    ``AtributoComplementarUsuarioEntradaSerializer.vinculos``.
+    """
+
+    tipo_vinculo = serializers.CharField(max_length=20)
+    codigo_vinculo_origem = serializers.CharField(max_length=50)
+    cargo_codigo = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True, max_length=50
+    )
+    cargo_nome = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True, max_length=255
+    )
+    unidade_codigo = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True, max_length=50
+    )
+    unidade_nome = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True, max_length=255
+    )
+    dre_codigo = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True, max_length=50
+    )
+    situacao = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True, max_length=50
+    )
+    data_inicio = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True, max_length=50
+    )
+    vigente = serializers.BooleanField(required=False, default=True)
+
+
 class AtributoComplementarUsuarioEntradaSerializer(serializers.Serializer):
     """Representa os atributos complementares de um usuário do lote."""
 
@@ -59,6 +93,7 @@ class AtributoComplementarUsuarioEntradaSerializer(serializers.Serializer):
     fonte = serializers.CharField(
         required=False, allow_null=True, allow_blank=True, max_length=50
     )
+    vinculos = VinculoEntradaSerializer(many=True, required=False)
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Exige ao menos um identificador natural do usuário.

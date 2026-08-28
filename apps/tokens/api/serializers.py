@@ -36,9 +36,10 @@ class TokenEnriquecidoRequestSerializer(serializers.Serializer):
         nome: Nome completo do usuário.
         email: E-mail do usuário.
         ativo: Indica se a conta está ativa.
-        cpf: CPF do usuário.
-        rf: Registro funcional do usuário.
-        perfil: Identificador do perfil selecionado.
+        cpf: CPF do usuário, quando cadastrado no Keycloak.
+        rf: Registro funcional do usuário, quando cadastrado no Keycloak.
+        perfil: Identificador do perfil selecionado, quando já houver
+            um perfil escolhido (ausente no momento do login).
     """
 
     kc_user_id = serializers.UUIDField()
@@ -46,9 +47,9 @@ class TokenEnriquecidoRequestSerializer(serializers.Serializer):
     nome = serializers.CharField()
     email = serializers.EmailField(required=False, allow_blank=True)
     ativo = serializers.BooleanField()
-    cpf = serializers.CharField()
-    rf = serializers.CharField()
-    perfil = serializers.CharField()
+    cpf = serializers.CharField(required=False, allow_null=True)
+    rf = serializers.CharField(required=False, allow_null=True)
+    perfil = serializers.CharField(required=False, allow_null=True)
 
 
 class TokenEnriquecidoResponseSerializer(serializers.Serializer):
