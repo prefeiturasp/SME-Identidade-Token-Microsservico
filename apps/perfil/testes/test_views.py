@@ -47,6 +47,7 @@ class TestProjecaoUsuarioView(TestCase):
             "perfis": [
                 {
                     "id": str(uuid4()),
+                    "sistema_id": 1,
                     "nome": "Administrador",
                     "ativo": True,
                 },
@@ -82,6 +83,7 @@ class TestProjecaoUsuarioView(TestCase):
         PerfilUsuario.objects.create(
             id=uuid4(),
             usuario=usuario,
+            sistema_id=1,
             nome="Administrador",
             ativo=True,
         )
@@ -109,6 +111,7 @@ class TestProjecaoUsuarioView(TestCase):
         assert response.json()["contrato_externo"] is False
         assert len(response.json()["perfis"]) == 1
         assert len(response.json()["permissoes"]) == 1
+        assert response.json()["perfis"][0]["sistema_id"] == 1
 
     def test_deve_retornar_400_quando_usuario_nao_existir(
         self,
@@ -139,6 +142,10 @@ class TestProjecaoUsuarioView(TestCase):
         assert usuario.nome == self.payload["nome"]
         assert usuario.perfis.count() == 1
         assert usuario.modulos_permissao.count() == 1
+
+        perfil = usuario.perfis.first()
+        assert perfil is not None
+        assert perfil.sistema_id == 1
 
     def test_deve_atualizar_projecao_usuario(self) -> None:
         """Deve atualizar uma projeção existente."""
@@ -234,4 +241,68 @@ class TestProjecaoUsuarioView(TestCase):
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.json() == {
             "detail": ("Ocorreu uma falha ao sincronizar as informações."),
+        }
+
+    def test_deve_filtrar_perfis_por_sistema_id(self) -> None:
+        """Deve retornar somente perfis associados ao sistema informado."""
+        usuario = ProjecaoUsuario.objects.create(
+            usuario_id=self.usuario_id,
+            login="usuario.teste",
+            rf="123456",
+            nome="Usuário Teste",
+            cpf="12345678900",
+            email="teste@teste.com",
+            situacao="ATIVO",
+            dre_codigo="DRE01",
+            contrato_externo=False,
+        )
+
+        perfil_sistema_1 = PerfilUsuario.objects.create(
+            id=uuid4(),
+            usuario=usuario,
+            sistema_id=1,
+            nome="Administrador",
+            ativo=True,
+        )
+
+        PerfilUsuario.objects.create(
+            id=uuid4(),
+            usuario=usuario,
+            sistema_id=2,
+            nome="Professor",
+            ativo=True,
+        )
+
+        response = self.client.get(
+            self.url,
+            {
+                "sistema_id": 1,
+            },
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+
+        corpo = response.json()
+
+        assert len(corpo["perfis"]) == 1
+
+        assert corpo["perfis"][0]["id"] == str(perfil_sistema_1.id)
+        assert corpo["perfis"][0]["sistema_id"] == 1
+        assert corpo["perfis"][0]["nome"] == "Administrador"
+
+    def test_deve_retornar_400_quando_sistema_id_nao_for_inteiro(
+        self,
+    ) -> None:
+        """Deve retornar 400 quando sistema_id não for inteiro."""
+        response = self.client.get(
+            self.url,
+            {
+                "sistema_id": "invalido",
+            },
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+        assert response.json() == {
+            "detail": "O parâmetro sistema_id deve ser número inteiro.",
         }

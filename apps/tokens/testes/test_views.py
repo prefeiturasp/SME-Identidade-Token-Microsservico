@@ -86,6 +86,7 @@ class TestTokenEnriquecidoView:
             "cpf": "12345678900",
             "rf": "123456",
             "perfil": "professor",
+            "sistema_id": "102",
         }
 
         client = criar_client()
@@ -119,8 +120,10 @@ class TestTokenEnriquecidoView:
                 "cpf": payload["cpf"],
                 "rf": payload["rf"],
                 "perfil": payload["perfil"],
+                "sistema_id": payload["sistema_id"],
             },
             perfil="professor",
+            sistema_id="102",
         )
 
     @patch("apps.tokens.api.views.TokenEnriquecidoService.gerar")
@@ -174,6 +177,7 @@ class TestTokenEnriquecidoView:
                 "ativo": payload["ativo"],
             },
             perfil=None,
+            sistema_id=None,
         )
 
     @patch("apps.tokens.api.views.TokenEnriquecidoService.gerar")
@@ -227,6 +231,7 @@ class TestTokenEnriquecidoView:
                 "perfil": None,
             },
             perfil=None,
+            sistema_id=None,
         )
 
 
