@@ -21,6 +21,7 @@ class PerfilUsuarioSerializer(serializers.ModelSerializer):
         model = PerfilUsuario
         fields = (
             "id",
+            "sistema_id",
             "nome",
             "ativo",
         )
@@ -102,6 +103,7 @@ class ProjecaoUsuarioSerializer(serializers.ModelSerializer):
                 PerfilUsuario(
                     id=perfil["id"],
                     usuario=usuario,
+                    sistema_id=perfil.get("sistema_id"),
                     nome=perfil["nome"],
                     ativo=perfil["ativo"],
                 )

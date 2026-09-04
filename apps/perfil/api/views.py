@@ -3,8 +3,11 @@
 import logging
 from uuid import UUID
 
+from django.db.models import Prefetch
 from drf_spectacular.utils import (
+    OpenApiParameter,
     OpenApiResponse,
+    OpenApiTypes,
     extend_schema,
 )
 from rest_framework import status
@@ -16,7 +19,10 @@ from apps.perfil.api.serializers import (
     ProjecaoUsuarioReadSerializer,
     ProjecaoUsuarioSerializer,
 )
-from apps.perfil.models import ProjecaoUsuario
+from apps.perfil.models import (
+    PerfilUsuario,
+    ProjecaoUsuario,
+)
 from apps.tokens.services import TokenEnriquecidoService
 
 logger = logging.getLogger(__name__)
@@ -32,8 +38,19 @@ class ProjecaoUsuarioView(APIView):
         summary="Consultar projeção de usuário",
         description=(
             "Retorna a projeção de um usuário, "
-            "incluindo seus perfis e permissões."
+            "incluindo seus perfis e permissões. "
+            "Quando sistema_id é informado, os perfis são filtrados "
+            "pelo sistema."
         ),
+        parameters=[
+            OpenApiParameter(
+                name="sistema_id",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Identificador do sistema.",
+            ),
+        ],
         responses={
             status.HTTP_200_OK: ProjecaoUsuarioReadSerializer,
             status.HTTP_400_BAD_REQUEST: OpenApiResponse(
@@ -48,6 +65,9 @@ class ProjecaoUsuarioView(APIView):
     ) -> Response:
         """Consulta a projeção de um usuário.
 
+        Quando ``sistema_id`` é informado via query string, somente
+        os perfis associados ao sistema são retornados.
+
         Args:
             request: Requisição HTTP recebida.
             usuario_id: Identificador único do usuário.
@@ -56,9 +76,33 @@ class ProjecaoUsuarioView(APIView):
             Resposta HTTP contendo a projeção de um usuário.
             Retorna 400 caso a projeção não seja encontrada.
         """
+        sistema_id_param = request.query_params.get("sistema_id")
+
+        perfis_queryset = PerfilUsuario.objects.all()
+
+        if sistema_id_param is not None:
+            try:
+                sistema_id = int(sistema_id_param)
+            except ValueError:
+                return Response(
+                    {
+                        "detail": (
+                            "O parâmetro sistema_id deve ser número inteiro."
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            perfis_queryset = perfis_queryset.filter(
+                sistema_id=sistema_id,
+            )
+
         try:
             usuario = ProjecaoUsuario.objects.prefetch_related(
-                "perfis",
+                Prefetch(
+                    "perfis",
+                    queryset=perfis_queryset,
+                ),
                 "modulos_permissao",
             ).get(usuario_id=usuario_id)
 

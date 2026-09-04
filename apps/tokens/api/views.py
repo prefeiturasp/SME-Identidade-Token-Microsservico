@@ -108,6 +108,7 @@ class TokenEnriquecidoView(APIView):
             usuario_id=usuario_id,
             conta_keycloak=serializer.validated_data,
             perfil=serializer.validated_data.get("perfil"),
+            sistema_id=serializer.validated_data.get("sistema_id"),
         )
 
         logger.info(
