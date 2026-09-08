@@ -4,9 +4,11 @@ import logging
 from typing import Any, cast
 from uuid import UUID
 
+from django.db.models import Prefetch
+
 from apps.cache import chaves
 from apps.cache.services import CacheService
-from apps.perfil.models import ProjecaoUsuario
+from apps.perfil.models import ModuloPermissaoUsuario, ProjecaoUsuario
 from apps.tokens.token_enriquecido import compor_token_enriquecido
 
 logger = logging.getLogger(__name__)
@@ -20,6 +22,7 @@ class TokenEnriquecidoService:
         usuario_id: UUID,
         conta_keycloak: dict,
         perfil: str | None,
+        sistema_id: str | None,
     ) -> dict:
         """Gera um Token Enriquecido para um usuário.
 
@@ -31,6 +34,8 @@ class TokenEnriquecidoService:
             usuario_id: Identificador único do usuário.
             conta_keycloak: Dados da conta autenticada no Keycloak.
             perfil: Perfil selecionado para composição do token.
+            sistema_id: Sistema utilizado para filtrar as permissões,
+                quando informado.
 
         Returns:
             Dados do Token Enriquecido contendo o JWT, a data de
@@ -57,6 +62,7 @@ class TokenEnriquecidoService:
 
         projecao_usuario = TokenEnriquecidoService._obter_projecao_usuario(
             usuario_id,
+            sistema_id=sistema_id,
         )
 
         token, expiracao, permissoes = compor_token_enriquecido(
@@ -91,6 +97,7 @@ class TokenEnriquecidoService:
     @staticmethod
     def _obter_projecao_usuario(
         usuario_id: UUID,
+        sistema_id: str | None = None,
     ) -> ProjecaoUsuario | None:
         """Obtém a projeção de um usuário.
 
@@ -98,16 +105,31 @@ class TokenEnriquecidoService:
         permissão para evitar consultas adicionais durante a geração do
         Token Enriquecido.
 
+        Quando ``sistema_id`` é informado, somente os módulos de permissão
+        associados ao sistema são carregados.
+
         Args:
             usuario_id: Identificador único do usuário.
+            sistema_id: Identificador do sistema utilizado para filtrar
+                os módulos de permissão.
 
         Returns:
             Projeção do usuário ou ``None`` caso não exista.
         """
+        permissoes_queryset = ModuloPermissaoUsuario.objects.all()
+
+        if sistema_id:
+            permissoes_queryset = permissoes_queryset.filter(
+                sistema_id=sistema_id,
+            )
+
         return (
             ProjecaoUsuario.objects.prefetch_related(
                 "perfis",
-                "modulos_permissao",
+                Prefetch(
+                    "modulos_permissao",
+                    queryset=permissoes_queryset,
+                ),
             )
             .filter(usuario_id=usuario_id)
             .first()

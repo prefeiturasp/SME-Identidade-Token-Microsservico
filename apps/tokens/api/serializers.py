@@ -40,6 +40,7 @@ class TokenEnriquecidoRequestSerializer(serializers.Serializer):
         rf: Registro funcional do usuário, quando cadastrado no Keycloak.
         perfil: Identificador do perfil selecionado, quando já houver
             um perfil escolhido (ausente no momento do login).
+        sistema_id: Identificador do sistema, quando informado.
     """
 
     kc_user_id = serializers.UUIDField()
@@ -50,6 +51,11 @@ class TokenEnriquecidoRequestSerializer(serializers.Serializer):
     cpf = serializers.CharField(required=False, allow_null=True)
     rf = serializers.CharField(required=False, allow_null=True)
     perfil = serializers.CharField(required=False, allow_null=True)
+    sistema_id = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
 
 
 class TokenEnriquecidoResponseSerializer(serializers.Serializer):

@@ -4,7 +4,10 @@ from uuid import uuid4
 
 from django.test import TestCase
 
-from apps.atributos_complementares.models import AtributoComplementarUsuario
+from apps.atributos_complementares.models import (
+    AtributoComplementarUsuario,
+    VinculoAtributoComplementar,
+)
 from apps.perfil.models import ProjecaoUsuario
 
 
@@ -90,3 +93,31 @@ class TestAtributoComplementarUsuarioModel(TestCase):
         atributo.refresh_from_db()
 
         assert atributo.usuario is None
+
+
+class TestVinculoAtributoComplementarModel(TestCase):
+    """Testes do model VinculoAtributoComplementar."""
+
+    def test_deve_retornar_identificador_natural_no_str(self) -> None:
+        """Deve retornar tipo do vínculo e código de origem."""
+        atributo = AtributoComplementarUsuario.objects.create(
+            rf="1234567",
+            nome="Usuário Teste",
+        )
+
+        vinculo = VinculoAtributoComplementar.objects.create(
+            atributo=atributo,
+            tipo_vinculo="cargo",
+            codigo_vinculo_origem="ABC123",
+        )
+
+        assert str(vinculo) == "cargo:ABC123"
+
+    def test_deve_possuir_metadados_corretos(self) -> None:
+        """Deve possuir os metadados configurados."""
+        meta = VinculoAtributoComplementar._meta
+
+        assert meta.verbose_name == "Vínculo de atributo complementar"
+        assert (
+            meta.verbose_name_plural == "Vínculos de atributos complementares"
+        )
