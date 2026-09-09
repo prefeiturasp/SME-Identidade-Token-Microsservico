@@ -137,6 +137,20 @@ class ProjecaoUsuarioSerializer(serializers.ModelSerializer):
         )
 
 
+class SistemaUsuarioSerializer(serializers.Serializer):
+    """Representa um sistema distinto associado a um usuário."""
+
+    sistema_id = serializers.IntegerField()
+    sistema_nome = serializers.CharField()
+
+
+class SistemasUsuarioResponseSerializer(serializers.Serializer):
+    """Representa a lista de sistemas distintos de um usuário."""
+
+    usuario_id = serializers.UUIDField()
+    sistemas = SistemaUsuarioSerializer(many=True)
+
+
 class ProjecaoUsuarioReadSerializer(serializers.ModelSerializer):
     """Representa a projeção de usuário para consulta."""
 

@@ -18,8 +18,10 @@ from rest_framework.views import APIView
 from apps.perfil.api.serializers import (
     ProjecaoUsuarioReadSerializer,
     ProjecaoUsuarioSerializer,
+    SistemasUsuarioResponseSerializer,
 )
 from apps.perfil.models import (
+    ModuloPermissaoUsuario,
     PerfilUsuario,
     ProjecaoUsuario,
 )
@@ -193,3 +195,70 @@ class ProjecaoUsuarioView(APIView):
         )
 
         return Response(status=status.HTTP_200_OK)
+
+
+class SistemasUsuarioView(APIView):
+    """Consulta os sistemas distintos associados a um usuário."""
+
+    @extend_schema(
+        tags=_TAG,
+        summary="Consultar sistemas do usuário",
+        description=(
+            "Retorna a lista de sistemas distintos aos quais o "
+            "usuário tem acesso, derivada de suas permissões de "
+            "módulo."
+        ),
+        responses={
+            status.HTTP_200_OK: SistemasUsuarioResponseSerializer,
+            status.HTTP_404_NOT_FOUND: OpenApiResponse(
+                description="Projeção de usuário não encontrada.",
+            ),
+        },
+    )
+    def get(
+        self,
+        request: Request,
+        usuario_id: UUID,
+    ) -> Response:
+        """Consulta os sistemas distintos de um usuário.
+
+        Args:
+            request: Requisição HTTP recebida.
+            usuario_id: Identificador único do usuário.
+
+        Returns:
+            Resposta HTTP contendo os sistemas do usuário. Retorna
+            404 caso a projeção não exista para o usuário informado.
+        """
+        if not ProjecaoUsuario.objects.filter(
+            usuario_id=usuario_id,
+        ).exists():
+            logger.warning(
+                "Projeção do usuário %s não encontrada.",
+                usuario_id,
+            )
+
+            return Response(
+                {"detail": "Projeção de usuário não encontrada."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        sistemas = (
+            ModuloPermissaoUsuario.objects.filter(
+                usuario_id=usuario_id,
+            )
+            .values("sistema_id", "sistema_nome")
+            .distinct()
+            .order_by("sistema_nome")
+        )
+
+        logger.info(
+            "Sistemas do usuário %s consultados com sucesso.",
+            usuario_id,
+        )
+
+        serializer = SistemasUsuarioResponseSerializer(
+            {"usuario_id": usuario_id, "sistemas": sistemas},
+        )
+
+        return Response(serializer.data)
