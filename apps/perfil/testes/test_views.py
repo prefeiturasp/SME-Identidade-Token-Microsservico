@@ -306,3 +306,107 @@ class TestProjecaoUsuarioView(TestCase):
         assert response.json() == {
             "detail": "O parâmetro sistema_id deve ser número inteiro.",
         }
+
+
+class TestSistemasUsuarioView(TestCase):
+    """Testes da view SistemasUsuarioView."""
+
+    def setUp(self) -> None:
+        """Cria os dados utilizados pelos testes."""
+        self.client = APIClient()
+        self.client.credentials(
+            HTTP_X_API_KEY=settings.API_KEY,
+        )
+
+        self.usuario_id = uuid4()
+
+        self.url = reverse(
+            "sistemas-usuario",
+            kwargs={
+                "usuario_id": self.usuario_id,
+            },
+        )
+
+    def test_deve_retornar_sistemas_distintos_do_usuario(self) -> None:
+        """Deve retornar os sistemas distintos associados ao usuário."""
+        usuario = ProjecaoUsuario.objects.create(
+            usuario_id=self.usuario_id,
+            login="usuario.teste",
+            nome="Usuário Teste",
+            situacao="ATIVO",
+        )
+
+        ModuloPermissaoUsuario.objects.create(
+            usuario=usuario,
+            sistema_id=1,
+            sistema_nome="CoreSSO",
+            modulo_id=3,
+            modulo_nome="Usuários",
+            consultar=True,
+        )
+
+        ModuloPermissaoUsuario.objects.create(
+            usuario=usuario,
+            sistema_id=1,
+            sistema_nome="CoreSSO",
+            modulo_id=4,
+            modulo_nome="Perfis",
+            consultar=True,
+        )
+
+        ModuloPermissaoUsuario.objects.create(
+            usuario=usuario,
+            sistema_id=176,
+            sistema_nome="Boletim Online",
+            modulo_id=1,
+            modulo_nome="Notas",
+            consultar=True,
+        )
+
+        response = self.client.get(self.url)
+
+        assert response.status_code == status.HTTP_200_OK
+
+        corpo = response.json()
+
+        assert corpo["usuario_id"] == str(self.usuario_id)
+        assert corpo["sistemas"] == [
+            {"sistema_id": 176, "sistema_nome": "Boletim Online"},
+            {"sistema_id": 1, "sistema_nome": "CoreSSO"},
+        ]
+
+    def test_deve_retornar_lista_vazia_quando_usuario_sem_permissoes(
+        self,
+    ) -> None:
+        """Deve retornar lista vazia quando não houver permissões."""
+        ProjecaoUsuario.objects.create(
+            usuario_id=self.usuario_id,
+            login="usuario.teste",
+            nome="Usuário Teste",
+            situacao="ATIVO",
+        )
+
+        response = self.client.get(self.url)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json() == {
+            "usuario_id": str(self.usuario_id),
+            "sistemas": [],
+        }
+
+    def test_deve_retornar_404_quando_usuario_nao_existir(self) -> None:
+        """Deve retornar 404 quando a projeção não existir."""
+        response = self.client.get(self.url)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.json() == {
+            "detail": "Projeção de usuário não encontrada.",
+        }
+
+    def test_deve_exigir_api_key(self) -> None:
+        """Deve exigir a API Key para consultar os sistemas."""
+        client = APIClient()
+
+        response = client.get(self.url)
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
