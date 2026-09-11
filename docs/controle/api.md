@@ -44,6 +44,16 @@ Conjunto de endpoints responsáveis pelo gerenciamento da projeção de autoriza
 |---------|----------|-----------|
 | PUT | `/identidade-token/api/v1/perfis/{usuario_id}` | Cria ou atualiza a projeção de autorização de um usuário. |
 
+### Consultar sistemas do usuário
+
+| Método | Endpoint | Descrição |
+|---------|----------|-----------|
+| GET | `/identidade-token/api/v1/perfis/{usuario_id}/sistemas/` | Retorna a lista de sistemas distintos aos quais o usuário tem acesso, derivada de suas permissões de módulo. |
+
+> **Observação**
+>
+> Se a projeção do usuário existir mas não houver nenhuma permissão de módulo associada, a resposta é **200** com `sistemas: []` — lista vazia é uma resposta válida, não um erro. Retorna **404** apenas quando o `usuario_id` informado não corresponder a nenhuma projeção de usuário.
+
 ---
 
 ## Tokens

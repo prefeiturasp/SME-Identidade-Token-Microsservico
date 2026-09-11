@@ -314,3 +314,32 @@ class TestComporTokenEnriquecido(TestCase):
             permissoes[0]["sistema_nome"],
             "CoreSSO",
         )
+
+    @patch("apps.tokens.token_enriquecido.obter_chave_privada")
+    def test_sem_atributo_complementar_retorna_vinculos_vazios(
+        self,
+        mock_obter_chave_privada: MagicMock,
+    ) -> None:
+        """Testa que vínculos ficam vazios sem atributo complementar."""
+        mock_obter_chave_privada.return_value = _PRIVATE_KEY_PEM
+
+        projecao = _criar_projecao_usuario()
+        projecao.atributos_complementares.first.return_value = None
+
+        token, _, _ = compor_token_enriquecido(
+            _CONTA_KEYCLOAK,
+            projecao,
+        )
+
+        claims = jwt.decode(
+            token,
+            _PUBLIC_KEY_PEM,
+            algorithms=["RS256"],
+        )
+
+        self.assertEqual(
+            claims["vinculos"],
+            [],
+        )
+
+        projecao.atributos_complementares.first.assert_called_once_with()

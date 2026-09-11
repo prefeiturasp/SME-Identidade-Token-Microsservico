@@ -21,6 +21,7 @@ class PerfilUsuarioSerializer(serializers.ModelSerializer):
         model = PerfilUsuario
         fields = (
             "id",
+            "sistema_id",
             "nome",
             "ativo",
         )
@@ -102,6 +103,7 @@ class ProjecaoUsuarioSerializer(serializers.ModelSerializer):
                 PerfilUsuario(
                     id=perfil["id"],
                     usuario=usuario,
+                    sistema_id=perfil.get("sistema_id"),
                     nome=perfil["nome"],
                     ativo=perfil["ativo"],
                 )
@@ -133,6 +135,20 @@ class ProjecaoUsuarioSerializer(serializers.ModelSerializer):
                 for permissao in permissoes
             ]
         )
+
+
+class SistemaUsuarioSerializer(serializers.Serializer):
+    """Representa um sistema distinto associado a um usuário."""
+
+    sistema_id = serializers.IntegerField()
+    sistema_nome = serializers.CharField()
+
+
+class SistemasUsuarioResponseSerializer(serializers.Serializer):
+    """Representa a lista de sistemas distintos de um usuário."""
+
+    usuario_id = serializers.UUIDField()
+    sistemas = SistemaUsuarioSerializer(many=True)
 
 
 class ProjecaoUsuarioReadSerializer(serializers.ModelSerializer):

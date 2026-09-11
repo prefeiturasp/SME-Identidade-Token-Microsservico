@@ -44,6 +44,11 @@ class PerfilUsuario(models.Model):
         on_delete=models.CASCADE,
         related_name="perfis",
     )
+    sistema_id = models.IntegerField(
+        null=True,
+        blank=True,
+        db_index=True,
+    )
     nome = models.CharField(max_length=200)
     ativo = models.BooleanField(default=True)
 
