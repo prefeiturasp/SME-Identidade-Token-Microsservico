@@ -35,13 +35,8 @@ class TestCacheService(SimpleTestCase):
         mock_get: Mock,
         mock_logger: Mock,
     ) -> None:
-        """Deve retornar ``None`` quando ocorrer erro ao consultar o cache.
-
-        Args:
-            mock_get: Mock da consulta ao cache.
-            mock_logger: Mock do logger.
-        """
-        mock_get.side_effect = Exception()
+        """Deve retornar ``None`` quando ocorrer erro ao consultar o cache."""
+        mock_get.side_effect = RuntimeError("Cache indisponível")
 
         resultado = CacheService.obter("chave")
 
@@ -80,13 +75,8 @@ class TestCacheService(SimpleTestCase):
         mock_set: Mock,
         mock_logger: Mock,
     ) -> None:
-        """Deve registrar erro quando ocorrer falha ao salvar no cache.
-
-        Args:
-            mock_set: Mock da operação de armazenamento.
-            mock_logger: Mock do logger.
-        """
-        mock_set.side_effect = Exception()
+        """Deve registrar erro quando ocorrer falha ao salvar no cache."""
+        mock_set.side_effect = RuntimeError("Cache indisponível")
 
         CacheService.salvar(
             chave="chave",
@@ -123,13 +113,8 @@ class TestCacheService(SimpleTestCase):
         mock_delete: Mock,
         mock_logger: Mock,
     ) -> None:
-        """Deve registrar erro quando ocorrer falha ao invalidar o cache.
-
-        Args:
-            mock_delete: Mock da operação de remoção.
-            mock_logger: Mock do logger.
-        """
-        mock_delete.side_effect = Exception()
+        """Deve registrar erro quando ocorrer falha ao invalidar o cache."""
+        mock_delete.side_effect = RuntimeError("Cache indisponível")
 
         CacheService.invalidar("chave")
 
@@ -161,7 +146,7 @@ class TestCacheService(SimpleTestCase):
         mock_logger: Mock,
     ) -> None:
         """Deve registrar erro quando falhar a invalidação por padrão."""
-        mock_delete_pattern.side_effect = Exception()
+        mock_delete_pattern.side_effect = RuntimeError("Cache indisponível")
 
         padrao = "token-enriquecido:usuario:*"
 
