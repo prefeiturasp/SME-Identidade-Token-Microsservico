@@ -1,7 +1,7 @@
 """Serviços responsáveis pelas operações de cache."""
 
 import logging
-from typing import cast
+from typing import Any, cast
 
 from django.core.cache import cache
 
@@ -45,6 +45,7 @@ class CacheService:
         Args:
             chave: Chave utilizada para armazenamento.
             valor: Valor que será armazenado.
+
         Returns:
             None
         """
@@ -72,3 +73,22 @@ class CacheService:
 
         except Exception:
             logger.exception("Falha ao invalidar valor do cache.")
+
+    @staticmethod
+    def invalidar_padrao(padrao: str) -> None:
+        """Remove valores do cache que correspondam ao padrão informado.
+
+        Caso o cache esteja indisponível, registra a ocorrência em log sem
+        interromper o fluxo da aplicação.
+
+        Args:
+            padrao: Padrão utilizado para localizar as chaves que serão
+                removidas.
+        """
+        try:
+            cast(Any, cache).delete_pattern(padrao)
+
+        except Exception:
+            logger.exception(
+                "Falha ao invalidar valores do cache pelo padrão."
+            )
