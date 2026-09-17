@@ -38,7 +38,9 @@ class TokenEnriquecidoServiceTest(SimpleTestCase):
 
         self.assertEqual(resultado, resposta)
 
-        mock_obter.assert_called_once()
+        mock_obter.assert_called_once_with(
+            f"token-enriquecido:{usuario_id}:none:none"
+        )
 
     @patch("apps.tokens.services.CacheService.salvar")
     @patch("apps.tokens.services.compor_token_enriquecido")
@@ -75,6 +77,8 @@ class TokenEnriquecidoServiceTest(SimpleTestCase):
             sistema_id="102",
         )
 
+        chave_esperada = f"token-enriquecido:{usuario_id}:ADMIN:102"
+
         self.assertEqual(
             resultado,
             {
@@ -84,8 +88,12 @@ class TokenEnriquecidoServiceTest(SimpleTestCase):
             },
         )
 
+        mock_obter.assert_called_once_with(
+            chave_esperada,
+        )
+
         mock_obter_projecao.assert_called_once_with(
-            usuario_id,
+            usuario_id=usuario_id,
             sistema_id="102",
         )
 
@@ -95,7 +103,14 @@ class TokenEnriquecidoServiceTest(SimpleTestCase):
             perfil="ADMIN",
         )
 
-        mock_salvar.assert_called_once()
+        mock_salvar.assert_called_once_with(
+            chave=chave_esperada,
+            valor={
+                "token": "jwt",
+                "data_expiracao": expiracao,
+                "permissoes": ["ADMIN"],
+            },
+        )
 
     @patch("apps.tokens.services.ProjecaoUsuario.objects")
     def test_deve_obter_projecao_usuario(
@@ -136,23 +151,27 @@ class TokenEnriquecidoServiceTest(SimpleTestCase):
             mock_objects.prefetch_related.return_value.filter.return_value.first
         ).assert_called_once_with()
 
-    @patch("apps.tokens.services.CacheService.invalidar")
-    @patch("apps.tokens.services.chaves.token_enriquecido")
+    @patch("apps.tokens.services.CacheService.invalidar_padrao")
+    @patch("apps.tokens.services.chaves.tokens_enriquecidos_usuario")
     def test_deve_invalidar_cache(
         self,
         mock_chave: Mock,
-        mock_invalidar: Mock,
+        mock_invalidar_padrao: Mock,
     ) -> None:
-        """Deve invalidar o Token Enriquecido armazenado em cache."""
+        """Deve invalidar todos os Tokens Enriquecidos do usuário."""
         usuario_id = uuid4()
 
-        mock_chave.return_value = "token:1"
+        mock_chave.return_value = f"token-enriquecido:{usuario_id}:*"
 
         TokenEnriquecidoService.invalidar(usuario_id)
 
-        mock_chave.assert_called_once_with(usuario_id)
+        mock_chave.assert_called_once_with(
+            usuario_id,
+        )
 
-        mock_invalidar.assert_called_once_with("token:1")
+        mock_invalidar_padrao.assert_called_once_with(
+            f"token-enriquecido:{usuario_id}:*"
+        )
 
     @patch("apps.tokens.services.ProjecaoUsuario.objects")
     @patch("apps.tokens.services.ModuloPermissaoUsuario.objects")
@@ -209,3 +228,52 @@ class TokenEnriquecidoServiceTest(SimpleTestCase):
         (
             mock_projecao_objects.prefetch_related.return_value.filter.return_value.first
         ).assert_called_once_with()
+
+    @patch("apps.tokens.services.CacheService.invalidar_padrao")
+    @patch("apps.tokens.services.chaves.tokens_enriquecidos_usuario")
+    def test_deve_invalidar_todos_os_caches_do_usuario(
+        self,
+        mock_chave: Mock,
+        mock_invalidar_padrao: Mock,
+    ) -> None:
+        """Deve invalidar todos os Tokens Enriquecidos do usuário."""
+        usuario_id = uuid4()
+
+        padrao = f"token-enriquecido:{usuario_id}:*"
+        mock_chave.return_value = padrao
+
+        TokenEnriquecidoService.invalidar(usuario_id)
+
+        mock_chave.assert_called_once_with(usuario_id)
+
+        mock_invalidar_padrao.assert_called_once_with(
+            padrao,
+        )
+
+    @patch("apps.tokens.services.CacheService.invalidar")
+    @patch("apps.tokens.services.chaves.token_enriquecido")
+    def test_deve_invalidar_cache_do_contexto(
+        self,
+        mock_chave: Mock,
+        mock_invalidar: Mock,
+    ) -> None:
+        """Deve invalidar somente o cache do contexto informado."""
+        usuario_id = uuid4()
+
+        mock_chave.return_value = "token:contexto"
+
+        TokenEnriquecidoService.invalidar_contexto(
+            usuario_id=usuario_id,
+            perfil="ADMIN",
+            sistema_id="102",
+        )
+
+        mock_chave.assert_called_once_with(
+            usuario_id=usuario_id,
+            perfil="ADMIN",
+            sistema_id="102",
+        )
+
+        mock_invalidar.assert_called_once_with(
+            "token:contexto",
+        )
