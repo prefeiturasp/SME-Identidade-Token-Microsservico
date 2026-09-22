@@ -1,0 +1,315 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt-BR" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apps.perfil.api.serializers &mdash; SME-Identidade-Token-Microsservico</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2346ddef"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/translations.js?v=71a39b36"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../../genindex.html" />
+    <link rel="search" title="Buscar" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SME-Identidade-Token-Microsservico
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar documentos" aria-label="Pesquisar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../arquitetura/visao_geral.html">Visão Geral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../arquitetura/fluxo_token_enriquecido.html">Fluxo do Token JWT Enriquecido</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../controle/index.html">Controle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Referência de código</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SME-Identidade-Token-Microsservico</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Código do módulo</a></li>
+      <li class="breadcrumb-item active">apps.perfil.api.serializers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código-fonte para apps.perfil.api.serializers</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Serializers do domínio de autorização."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">transaction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">serializers</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">apps.perfil.models</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ModuloPermissaoUsuario</span><span class="p">,</span>
+    <span class="n">PerfilUsuario</span><span class="p">,</span>
+    <span class="n">ProjecaoUsuario</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="PerfilUsuarioSerializer">
+<a class="viewcode-back" href="../../../../api.html#apps.perfil.api.serializers.PerfilUsuarioSerializer">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PerfilUsuarioSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Representa os perfis associados a um usuário."""</span>
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">()</span>
+
+<div class="viewcode-block" id="PerfilUsuarioSerializer.Meta">
+<a class="viewcode-back" href="../../../../api.html#apps.perfil.api.serializers.PerfilUsuarioSerializer.Meta">[documentos]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">PerfilUsuario</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">"id"</span><span class="p">,</span>
+            <span class="s2">"sistema_id"</span><span class="p">,</span>
+            <span class="s2">"nome"</span><span class="p">,</span>
+            <span class="s2">"ativo"</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ModuloPermissaoUsuarioSerializer">
+<a class="viewcode-back" href="../../../../api.html#apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ModuloPermissaoUsuarioSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Representa as permissões de um módulo concedidas a um usuário."""</span>
+
+<div class="viewcode-block" id="ModuloPermissaoUsuarioSerializer.Meta">
+<a class="viewcode-back" href="../../../../api.html#apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer.Meta">[documentos]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ModuloPermissaoUsuario</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">"sistema_id"</span><span class="p">,</span>
+            <span class="s2">"sistema_nome"</span><span class="p">,</span>
+            <span class="s2">"modulo_id"</span><span class="p">,</span>
+            <span class="s2">"modulo_nome"</span><span class="p">,</span>
+            <span class="s2">"consultar"</span><span class="p">,</span>
+            <span class="s2">"inserir"</span><span class="p">,</span>
+            <span class="s2">"alterar"</span><span class="p">,</span>
+            <span class="s2">"excluir"</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ProjecaoUsuarioSerializer">
+<a class="viewcode-back" href="../../../../api.html#apps.perfil.api.serializers.ProjecaoUsuarioSerializer">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProjecaoUsuarioSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Representa a projeção de um usuário."""</span>
+
+    <span class="n">login</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
+        <span class="n">validators</span><span class="o">=</span><span class="p">[],</span>
+    <span class="p">)</span>
+
+    <span class="n">perfis</span> <span class="o">=</span> <span class="n">PerfilUsuarioSerializer</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">permissoes</span> <span class="o">=</span> <span class="n">ModuloPermissaoUsuarioSerializer</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProjecaoUsuarioSerializer.Meta">
+<a class="viewcode-back" href="../../../../api.html#apps.perfil.api.serializers.ProjecaoUsuarioSerializer.Meta">[documentos]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ProjecaoUsuario</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">"login"</span><span class="p">,</span>
+            <span class="s2">"rf"</span><span class="p">,</span>
+            <span class="s2">"nome"</span><span class="p">,</span>
+            <span class="s2">"cpf"</span><span class="p">,</span>
+            <span class="s2">"email"</span><span class="p">,</span>
+            <span class="s2">"situacao"</span><span class="p">,</span>
+            <span class="s2">"dre_codigo"</span><span class="p">,</span>
+            <span class="s2">"contrato_externo"</span><span class="p">,</span>
+            <span class="s2">"perfis"</span><span class="p">,</span>
+            <span class="s2">"permissoes"</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProjecaoUsuarioSerializer.save">
+<a class="viewcode-back" href="../../../../api.html#apps.perfil.api.serializers.ProjecaoUsuarioSerializer.save">[documentos]</a>
+    <span class="nd">@transaction</span><span class="o">.</span><span class="n">atomic</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjecaoUsuario</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Cria ou atualiza a projeção do usuário."""</span>
+        <span class="n">usuario_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"usuario_id"</span><span class="p">]</span>
+        <span class="n">dados</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validated_data</span>
+
+        <span class="n">perfis</span> <span class="o">=</span> <span class="n">dados</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"perfis"</span><span class="p">)</span>
+        <span class="n">permissoes</span> <span class="o">=</span> <span class="n">dados</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"permissoes"</span><span class="p">)</span>
+
+        <span class="n">usuario</span><span class="p">:</span> <span class="n">ProjecaoUsuario</span>
+
+        <span class="n">usuario</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ProjecaoUsuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">update_or_create</span><span class="p">(</span>
+            <span class="n">usuario_id</span><span class="o">=</span><span class="n">usuario_id</span><span class="p">,</span>
+            <span class="n">defaults</span><span class="o">=</span><span class="n">dados</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sincronizar_perfis</span><span class="p">(</span><span class="n">usuario</span><span class="p">,</span> <span class="n">perfis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sincronizar_permissoes</span><span class="p">(</span><span class="n">usuario</span><span class="p">,</span> <span class="n">permissoes</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">usuario</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sincronizar_perfis</span><span class="p">(</span>
+        <span class="n">usuario</span><span class="p">:</span> <span class="n">ProjecaoUsuario</span><span class="p">,</span>
+        <span class="n">perfis</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Substitui os perfis associados ao usuário."""</span>
+        <span class="n">usuario</span><span class="o">.</span><span class="n">perfis</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+        <span class="n">PerfilUsuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">bulk_create</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">PerfilUsuario</span><span class="p">(</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="n">perfil</span><span class="p">[</span><span class="s2">"id"</span><span class="p">],</span>
+                    <span class="n">usuario</span><span class="o">=</span><span class="n">usuario</span><span class="p">,</span>
+                    <span class="n">sistema_id</span><span class="o">=</span><span class="n">perfil</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sistema_id"</span><span class="p">),</span>
+                    <span class="n">nome</span><span class="o">=</span><span class="n">perfil</span><span class="p">[</span><span class="s2">"nome"</span><span class="p">],</span>
+                    <span class="n">ativo</span><span class="o">=</span><span class="n">perfil</span><span class="p">[</span><span class="s2">"ativo"</span><span class="p">],</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">perfil</span> <span class="ow">in</span> <span class="n">perfis</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sincronizar_permissoes</span><span class="p">(</span>
+        <span class="n">usuario</span><span class="p">:</span> <span class="n">ProjecaoUsuario</span><span class="p">,</span>
+        <span class="n">permissoes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Substitui as permissões associadas ao usuário."""</span>
+        <span class="n">usuario</span><span class="o">.</span><span class="n">modulos_permissao</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+        <span class="n">ModuloPermissaoUsuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">bulk_create</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">ModuloPermissaoUsuario</span><span class="p">(</span>
+                    <span class="n">usuario</span><span class="o">=</span><span class="n">usuario</span><span class="p">,</span>
+                    <span class="n">sistema_id</span><span class="o">=</span><span class="n">permissao</span><span class="p">[</span><span class="s2">"sistema_id"</span><span class="p">],</span>
+                    <span class="n">sistema_nome</span><span class="o">=</span><span class="n">permissao</span><span class="p">[</span><span class="s2">"sistema_nome"</span><span class="p">],</span>
+                    <span class="n">modulo_id</span><span class="o">=</span><span class="n">permissao</span><span class="p">[</span><span class="s2">"modulo_id"</span><span class="p">],</span>
+                    <span class="n">modulo_nome</span><span class="o">=</span><span class="n">permissao</span><span class="p">[</span><span class="s2">"modulo_nome"</span><span class="p">],</span>
+                    <span class="n">consultar</span><span class="o">=</span><span class="n">permissao</span><span class="p">[</span><span class="s2">"consultar"</span><span class="p">],</span>
+                    <span class="n">inserir</span><span class="o">=</span><span class="n">permissao</span><span class="p">[</span><span class="s2">"inserir"</span><span class="p">],</span>
+                    <span class="n">alterar</span><span class="o">=</span><span class="n">permissao</span><span class="p">[</span><span class="s2">"alterar"</span><span class="p">],</span>
+                    <span class="n">excluir</span><span class="o">=</span><span class="n">permissao</span><span class="p">[</span><span class="s2">"excluir"</span><span class="p">],</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">permissao</span> <span class="ow">in</span> <span class="n">permissoes</span>
+            <span class="p">]</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SistemaUsuarioSerializer">
+<a class="viewcode-back" href="../../../../api.html#apps.perfil.api.serializers.SistemaUsuarioSerializer">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SistemaUsuarioSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Representa um sistema distinto associado a um usuário."""</span>
+
+    <span class="n">sistema_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+    <span class="n">sistema_nome</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="SistemasUsuarioResponseSerializer">
+<a class="viewcode-back" href="../../../../api.html#apps.perfil.api.serializers.SistemasUsuarioResponseSerializer">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SistemasUsuarioResponseSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Representa a lista de sistemas distintos de um usuário."""</span>
+
+    <span class="n">usuario_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">()</span>
+    <span class="n">sistemas</span> <span class="o">=</span> <span class="n">SistemaUsuarioSerializer</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ProjecaoUsuarioReadSerializer">
+<a class="viewcode-back" href="../../../../api.html#apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProjecaoUsuarioReadSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">ModelSerializer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Representa a projeção de usuário para consulta."""</span>
+
+    <span class="n">perfis</span> <span class="o">=</span> <span class="n">PerfilUsuarioSerializer</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">permissoes</span> <span class="o">=</span> <span class="n">ModuloPermissaoUsuarioSerializer</span><span class="p">(</span>
+        <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">"modulos_permissao"</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="ProjecaoUsuarioReadSerializer.Meta">
+<a class="viewcode-back" href="../../../../api.html#apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer.Meta">[documentos]</a>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ProjecaoUsuario</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">"usuario_id"</span><span class="p">,</span>
+            <span class="s2">"login"</span><span class="p">,</span>
+            <span class="s2">"rf"</span><span class="p">,</span>
+            <span class="s2">"nome"</span><span class="p">,</span>
+            <span class="s2">"cpf"</span><span class="p">,</span>
+            <span class="s2">"email"</span><span class="p">,</span>
+            <span class="s2">"situacao"</span><span class="p">,</span>
+            <span class="s2">"dre_codigo"</span><span class="p">,</span>
+            <span class="s2">"contrato_externo"</span><span class="p">,</span>
+            <span class="s2">"perfis"</span><span class="p">,</span>
+            <span class="s2">"permissoes"</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Direitos autorais .</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

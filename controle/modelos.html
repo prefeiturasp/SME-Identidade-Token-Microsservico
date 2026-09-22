@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt-BR" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modelos &mdash; SME-Identidade-Token-Microsservico</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2346ddef"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/translations.js?v=71a39b36"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Buscar" href="../search.html" />
+    <link rel="next" title="API" href="api.html" />
+    <link rel="prev" title="Controle" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SME-Identidade-Token-Microsservico
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar documentos" aria-label="Pesquisar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../arquitetura/visao_geral.html">Visão Geral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../arquitetura/fluxo_token_enriquecido.html">Fluxo do Token JWT Enriquecido</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Controle</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Modelos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#relacionamento-entre-os-modelos">Relacionamento entre os modelos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#projecaousuario">ProjecaoUsuario</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#campos-da-projecao">Campos da projeção</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#perfilusuario">PerfilUsuario</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#campos-do-perfil">Campos do perfil</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modulopermissaousuario">ModuloPermissaoUsuario</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#campos-da-permissao">Campos da permissão</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#atributocomplementarusuario">AtributoComplementarUsuario</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#campos-do-atributo-complementar">Campos do atributo complementar</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#vinculoatributocomplementar">VinculoAtributoComplementar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#campos-do-vinculo">Campos do vínculo</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#openapi">OpenAPI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">Referência de código</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SME-Identidade-Token-Microsservico</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Controle</a></li>
+      <li class="breadcrumb-item active">Modelos</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/controle/modelos.md.txt" rel="nofollow"> Ver código-fonte da página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="modelos">
+<h1>Modelos<a class="headerlink" href="#modelos" title="Link para este cabeçalho"></a></h1>
+<p>Esta seção descreve os modelos persistidos pelo <strong>SME-Identidade-Token-Microsservico</strong>, responsáveis por armazenar a projeção de autorização dos usuários e os atributos complementares publicados pelo ETL.</p>
+<p>Os modelos representam as informações utilizadas para compor e disponibilizar atributos de autorização consumidos pelos sistemas da plataforma.</p>
+<section id="relacionamento-entre-os-modelos">
+<h2>Relacionamento entre os modelos<a class="headerlink" href="#relacionamento-entre-os-modelos" title="Link para este cabeçalho"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ProjecaoUsuario
+        │
+        ├──────────► PerfilUsuario
+        │
+        └──────────► ModuloPermissaoUsuario
+
+AtributoComplementarUsuario (associado a ProjecaoUsuario por RF/CPF)
+        │
+        └──────────► VinculoAtributoComplementar
+</pre></div>
+</div>
+<p>Cada usuário possui uma projeção de autorização, composta por seus perfis e permissões. Separadamente, o ETL publica atributos complementares (identidade e vínculos funcionais) que se associam à projeção de forma oportunista, quando ela existe.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="projecaousuario">
+<h1>ProjecaoUsuario<a class="headerlink" href="#projecaousuario" title="Link para este cabeçalho"></a></h1>
+<p>Representa a projeção de autorização de um usuário.</p>
+<p>Este modelo centraliza as informações cadastrais e de autorização utilizadas pelos sistemas consumidores durante a composição de claims e demais atributos complementares.</p>
+<section id="campos-da-projecao">
+<h2>Campos da projeção<a class="headerlink" href="#campos-da-projecao" title="Link para este cabeçalho"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Campo</p></th>
+<th class="head"><p>Tipo</p></th>
+<th class="head"><p>Descrição</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">usuario_id</span></code></p></td>
+<td><p>UUID</p></td>
+<td><p>Identificador único do usuário.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">login</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Login do usuário na plataforma.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rf</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Registro funcional do usuário, quando aplicável.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nome</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Nome completo do usuário.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cpf</span></code></p></td>
+<td><p>String</p></td>
+<td><p>CPF do usuário.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">email</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Endereço de e-mail do usuário.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">situacao</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Situação atual do usuário.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dre_codigo</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Código da Diretoria Regional de Educação (DRE) associada ao usuário.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">contrato_externo</span></code></p></td>
+<td><p>Boolean</p></td>
+<td><p>Indica se o usuário possui contrato externo.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">criado_em</span></code></p></td>
+<td><p>DateTime</p></td>
+<td><p>Data de criação do registro.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">atualizado_em</span></code></p></td>
+<td><p>DateTime</p></td>
+<td><p>Data da última atualização do registro.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<hr class="docutils" />
+<section id="perfilusuario">
+<h1>PerfilUsuario<a class="headerlink" href="#perfilusuario" title="Link para este cabeçalho"></a></h1>
+<p>Representa um perfil atribuído a um usuário.</p>
+<p>Cada perfil identifica um contexto de atuação ou papel desempenhado pelo usuário dentro da plataforma.</p>
+<section id="campos-do-perfil">
+<h2>Campos do perfil<a class="headerlink" href="#campos-do-perfil" title="Link para este cabeçalho"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Campo</p></th>
+<th class="head"><p>Tipo</p></th>
+<th class="head"><p>Descrição</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p>UUID</p></td>
+<td><p>Identificador único do perfil.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">usuario</span></code></p></td>
+<td><p>FK</p></td>
+<td><p>Referência para a projeção do usuário.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nome</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Nome do perfil.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ativo</span></code></p></td>
+<td><p>Boolean</p></td>
+<td><p>Indica se o perfil está ativo.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<hr class="docutils" />
+<section id="modulopermissaousuario">
+<h1>ModuloPermissaoUsuario<a class="headerlink" href="#modulopermissaousuario" title="Link para este cabeçalho"></a></h1>
+<p>Representa uma permissão CRUD concedida a um usuário para um módulo de um sistema.</p>
+<p>A permissão é concedida por sistema e módulo, com quatro ações independentes — a granularidade real é (sistema, módulo, ação), não um código de permissão único. A unicidade é sempre pelo par <code class="docutils literal notranslate"><span class="pre">(sistema_id,</span> <span class="pre">modulo_id)</span></code>, já que <code class="docutils literal notranslate"><span class="pre">modulo_id</span></code> sozinho pode se repetir entre sistemas diferentes.</p>
+<section id="campos-da-permissao">
+<h2>Campos da permissão<a class="headerlink" href="#campos-da-permissao" title="Link para este cabeçalho"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Campo</p></th>
+<th class="head"><p>Tipo</p></th>
+<th class="head"><p>Descrição</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p>UUID</p></td>
+<td><p>Identificador único da permissão.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">usuario</span></code></p></td>
+<td><p>FK</p></td>
+<td><p>Referência para a projeção do usuário.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sistema_id</span></code></p></td>
+<td><p>Integer</p></td>
+<td><p>Identificador do sistema.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sistema_nome</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Nome do sistema.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modulo_id</span></code></p></td>
+<td><p>Integer</p></td>
+<td><p>Identificador do módulo (único apenas em conjunto com <code class="docutils literal notranslate"><span class="pre">sistema_id</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modulo_nome</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Nome do módulo.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">consultar</span></code></p></td>
+<td><p>Boolean</p></td>
+<td><p>Permissão de consulta no módulo.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">inserir</span></code></p></td>
+<td><p>Boolean</p></td>
+<td><p>Permissão de inserção no módulo.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">alterar</span></code></p></td>
+<td><p>Boolean</p></td>
+<td><p>Permissão de alteração no módulo.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">excluir</span></code></p></td>
+<td><p>Boolean</p></td>
+<td><p>Permissão de exclusão no módulo.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<hr class="docutils" />
+<section id="atributocomplementarusuario">
+<h1>AtributoComplementarUsuario<a class="headerlink" href="#atributocomplementarusuario" title="Link para este cabeçalho"></a></h1>
+<p>Registra os atributos complementares de um usuário, publicados em lote pelo ETL (endpoint <code class="docutils literal notranslate"><span class="pre">etl/push-batch</span></code>) a partir das fontes legadas.</p>
+<p>Identifica o usuário por RF, CPF ou matrícula. O payload de origem não carrega o identificador do usuário na plataforma, então o vínculo com <code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario</span></code> é resolvido de forma oportunista (por RF ou CPF) e pode ficar nulo até essa projeção existir.</p>
+<section id="campos-do-atributo-complementar">
+<h2>Campos do atributo complementar<a class="headerlink" href="#campos-do-atributo-complementar" title="Link para este cabeçalho"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Campo</p></th>
+<th class="head"><p>Tipo</p></th>
+<th class="head"><p>Descrição</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p>UUID</p></td>
+<td><p>Identificador único do registro.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">usuario</span></code></p></td>
+<td><p>FK (opcional)</p></td>
+<td><p>Referência para a projeção do usuário, quando resolvida.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rf</span></code>, <code class="docutils literal notranslate"><span class="pre">cpf</span></code>, <code class="docutils literal notranslate"><span class="pre">matricula</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Identificadores naturais do usuário na origem.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nome</span></code>, <code class="docutils literal notranslate"><span class="pre">email</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Dados de identidade.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tipo_usuario</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Tipo inferido a partir da fonte (servidor, aluno, terceiro).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cargo</span></code>, <code class="docutils literal notranslate"><span class="pre">funcao</span></code>, <code class="docutils literal notranslate"><span class="pre">unidade</span></code>, <code class="docutils literal notranslate"><span class="pre">unidade_codigo</span></code>, <code class="docutils literal notranslate"><span class="pre">dre</span></code>, <code class="docutils literal notranslate"><span class="pre">ue</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Atributos escalares de outros tipos de usuário (ex.: aluno) — para servidor, esse dado vem de <code class="docutils literal notranslate"><span class="pre">vinculos</span></code>, não desses campos.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cod_escola</span></code>, <code class="docutils literal notranslate"><span class="pre">turma</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Atributos específicos de aluno.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">tipo_acesso</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Atributo específico de terceiro.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">situacao</span></code>, <code class="docutils literal notranslate"><span class="pre">fonte</span></code>, <code class="docutils literal notranslate"><span class="pre">id_execucao</span></code></p></td>
+<td><p>String/UUID</p></td>
+<td><p>Metadados de origem e execução do ETL.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">criado_em</span></code>, <code class="docutils literal notranslate"><span class="pre">atualizado_em</span></code></p></td>
+<td><p>DateTime</p></td>
+<td><p>Datas de controle do registro.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<hr class="docutils" />
+<section id="vinculoatributocomplementar">
+<h1>VinculoAtributoComplementar<a class="headerlink" href="#vinculoatributocomplementar" title="Link para este cabeçalho"></a></h1>
+<p>Representa um vínculo funcional vigente de um servidor (cargo base, cargo sobreposto/comissionado ou função/atividade).</p>
+<p>Um servidor pode ter múltiplos vínculos simultâneos e independentes — inclusive mais de um cargo base ao mesmo tempo — cada um com seu próprio cargo e sua própria unidade/DRE, por isso é modelado como tabela filha de <code class="docutils literal notranslate"><span class="pre">AtributoComplementarUsuario</span></code> (1 atributo → N vínculos), não como campos escalares. A chave <code class="docutils literal notranslate"><span class="pre">(atributo,</span> <span class="pre">tipo_vinculo,</span> <span class="pre">codigo_vinculo_origem)</span></code> é única, usada para upsert idempotente nos reenvios do ETL.</p>
+<section id="campos-do-vinculo">
+<h2>Campos do vínculo<a class="headerlink" href="#campos-do-vinculo" title="Link para este cabeçalho"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Campo</p></th>
+<th class="head"><p>Tipo</p></th>
+<th class="head"><p>Descrição</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p>UUID</p></td>
+<td><p>Identificador único do vínculo.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">atributo</span></code></p></td>
+<td><p>FK</p></td>
+<td><p>Referência para o atributo complementar do usuário.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tipo_vinculo</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Tipo do vínculo: <code class="docutils literal notranslate"><span class="pre">cargo_base</span></code>, <code class="docutils literal notranslate"><span class="pre">cargo_sobreposto</span></code> ou <code class="docutils literal notranslate"><span class="pre">funcao_atividade</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">codigo_vinculo_origem</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Chave natural do vínculo na origem, usada para upsert idempotente.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cargo_codigo</span></code>, <code class="docutils literal notranslate"><span class="pre">cargo_nome</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Identificação do cargo.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">unidade_codigo</span></code>, <code class="docutils literal notranslate"><span class="pre">unidade_nome</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Identificação da unidade de lotação do vínculo.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dre_codigo</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Código da DRE responsável pela unidade do vínculo.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">situacao</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Situação do vínculo, quando disponível na origem.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">data_inicio</span></code></p></td>
+<td><p>String</p></td>
+<td><p>Data de início do vínculo, quando disponível na origem.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vigente</span></code></p></td>
+<td><p>Boolean</p></td>
+<td><p>Indica se o vínculo está vigente.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">criado_em</span></code>, <code class="docutils literal notranslate"><span class="pre">atualizado_em</span></code></p></td>
+<td><p>DateTime</p></td>
+<td><p>Datas de controle do registro.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Rodapé">
+        <a href="index.html" class="btn btn-neutral float-left" title="Controle" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Próximo <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Direitos autorais .</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

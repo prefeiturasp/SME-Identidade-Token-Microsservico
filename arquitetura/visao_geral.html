@@ -1,0 +1,233 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt-BR" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visão Geral &mdash; SME-Identidade-Token-Microsservico</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2346ddef"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/translations.js?v=71a39b36"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Buscar" href="../search.html" />
+    <link rel="next" title="Fluxo do Token JWT Enriquecido" href="fluxo_token_enriquecido.html" />
+    <link rel="prev" title="SME Identidade Token Microsserviço" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SME-Identidade-Token-Microsservico
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar documentos" aria-label="Pesquisar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Visão Geral</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#objetivo">Objetivo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#papel-na-arquitetura">Papel na arquitetura</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fluxo">Fluxo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#principais-responsabilidades">Principais responsabilidades</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#limites-de-responsabilidade">Limites de responsabilidade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dominios-da-aplicacao">Domínios da aplicação</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fluxo_token_enriquecido.html">Fluxo do Token JWT Enriquecido</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../controle/index.html">Controle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">Referência de código</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SME-Identidade-Token-Microsservico</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Visão Geral</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/arquitetura/visao_geral.md.txt" rel="nofollow"> Ver código-fonte da página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="visao-geral">
+<h1>Visão Geral<a class="headerlink" href="#visao-geral" title="Link para este cabeçalho"></a></h1>
+<section id="objetivo">
+<h2>Objetivo<a class="headerlink" href="#objetivo" title="Link para este cabeçalho"></a></h2>
+<p>O <strong>SME-Identidade-Token-Microsservico</strong> é responsável por compor, enriquecer e disponibilizar atributos complementares de autorização utilizados pelos sistemas da Secretaria Municipal de Educação de São Paulo (SME-SP).</p>
+<p>O serviço atua como uma camada complementar ao Keycloak, centralizando informações de autorização provenientes de diferentes fontes e disponibilizando uma projeção consistente para consumo pelos sistemas da plataforma.</p>
+<p>Seu principal objetivo é desacoplar regras de autorização, projeções legadas e atributos corporativos do provedor de identidade, permitindo que esses dados evoluam independentemente do processo de autenticação.</p>
+<p>Além disso, o serviço utiliza uma camada de cache baseada em <strong>KeyDB</strong> para otimizar a geração do Token Enriquecido, reduzindo consultas repetidas às projeções de autorização e melhorando o tempo de resposta das requisições.</p>
+</section>
+<section id="papel-na-arquitetura">
+<h2>Papel na arquitetura<a class="headerlink" href="#papel-na-arquitetura" title="Link para este cabeçalho"></a></h2>
+<p>O Keycloak permanece como a autoridade responsável pela identidade, autenticação e protocolos de segurança da plataforma.</p>
+<p>O SME-Identidade-Token-Microsservico complementa esse processo, sendo responsável por:</p>
+<ul class="simple">
+<li><p>manter projeções de autorização;</p></li>
+<li><p>consolidar perfis e permissões;</p></li>
+<li><p>compor atributos complementares (claims);</p></li>
+<li><p>compor o token JWT enriquecido;</p></li>
+<li><p>armazenar temporariamente tokens enriquecidos em cache utilizando KeyDB;</p></li>
+<li><p>invalidar automaticamente o cache quando houver atualização das projeções de autorização;</p></li>
+<li><p>assinar os tokens utilizando RS256;</p></li>
+<li><p>publicar as chaves públicas por meio do endpoint JWKS;</p></li>
+<li><p>disponibilizar projeções para consumo pelos serviços da plataforma;</p></li>
+<li><p>preservar compatibilidade com sistemas legados.</p></li>
+</ul>
+<p>Dessa forma, o serviço separa claramente as responsabilidades entre autenticação e autorização complementar, utilizando uma camada de cache para otimizar operações de leitura sem alterar a origem dos dados persistidos.</p>
+</section>
+<section id="fluxo">
+<h2>Fluxo<a class="headerlink" href="#fluxo" title="Link para este cabeçalho"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                   +----------------+
+                   |   Keycloak     |
+                   | Identidade     |
+                   +-------+--------+
+                           |
+                           | Identidade base
+                           |
+                           ▼
+                 +-------------------------+
+                 | SME Identidade Token    |
+                 |                         |
+                 | • Projeções             |
+                 | • Perfis                |
+                 | • Permissões            |
+                 | • Claims                |
+                 | • JWT Enriquecido       |
+                 | • Cache (KeyDB)         |
+                 | • JWKS                  |
+                 +-----------+-------------+
+                             |
+          +------------------+------------------+
+          |                                     |
+          ▼                                     ▼
+  Auth Gateway                      Sistemas consumidores
+</pre></div>
+</div>
+</section>
+<section id="principais-responsabilidades">
+<h2>Principais responsabilidades<a class="headerlink" href="#principais-responsabilidades" title="Link para este cabeçalho"></a></h2>
+<p>O serviço possui as seguintes responsabilidades:</p>
+<ul class="simple">
+<li><p>sincronizar projeções de autorização recebidas de sistemas externos;</p></li>
+<li><p>persistir perfis, permissões e demais atributos de autorização;</p></li>
+<li><p>disponibilizar consultas sobre as projeções armazenadas;</p></li>
+<li><p>compor o token JWT enriquecido;</p></li>
+<li><p>reutilizar tokens enriquecidos armazenados em cache quando disponíveis;</p></li>
+<li><p>invalidar entradas de cache associadas às projeções atualizadas;</p></li>
+<li><p>assinar os tokens utilizando RS256;</p></li>
+<li><p>publicar as chaves públicas por meio do endpoint JWKS;</p></li>
+<li><p>enriquecer informações utilizadas durante a composição de tokens;</p></li>
+<li><p>reduzir o acoplamento entre os sistemas consumidores e o provedor de identidade.</p></li>
+</ul>
+</section>
+<section id="limites-de-responsabilidade">
+<h2>Limites de responsabilidade<a class="headerlink" href="#limites-de-responsabilidade" title="Link para este cabeçalho"></a></h2>
+<p>O SME-Identidade-Token-Microsservico <strong>não</strong> é responsável por:</p>
+<ul class="simple">
+<li><p>autenticar usuários;</p></li>
+<li><p>validar credenciais;</p></li>
+<li><p>emitir identidade oficial;</p></li>
+<li><p>gerenciar sessões;</p></li>
+<li><p>substituir o Keycloak como Identity Provider (IdP).</p></li>
+</ul>
+<p>Essas responsabilidades permanecem sob domínio do Keycloak.</p>
+<p>A camada de cache não substitui a persistência das projeções de autorização, sendo utilizada exclusivamente como mecanismo de otimização para reduzir o custo de processamento da geração do Token Enriquecido.</p>
+</section>
+<section id="dominios-da-aplicacao">
+<h2>Domínios da aplicação<a class="headerlink" href="#dominios-da-aplicacao" title="Link para este cabeçalho"></a></h2>
+<p>A aplicação está organizada em domínios funcionais.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Domínio</p></th>
+<th class="head"><p>Responsabilidade</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Core</p></td>
+<td><p>Endpoints de infraestrutura e funcionalidades comuns da aplicação.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Autenticação</p></td>
+<td><p>Proteção dos endpoints por meio de autenticação via API Key.</p></td>
+</tr>
+<tr class="row-even"><td><p>Perfil</p></td>
+<td><p>Gerenciamento das projeções de usuários, perfis e permissões utilizadas na composição dos atributos de autorização.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tokens</p></td>
+<td><p>Emissão, validação e publicação dos tokens JWT enriquecidos e gerenciamento das chaves de assinatura.</p></td>
+</tr>
+<tr class="row-even"><td><p>Cache</p></td>
+<td><p>Gerenciamento da camada de cache baseada em KeyDB, incluindo geração de chaves, armazenamento, recuperação e invalidação das entradas utilizadas na composição do Token Enriquecido.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Rodapé">
+        <a href="../index.html" class="btn btn-neutral float-left" title="SME Identidade Token Microsserviço" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="fluxo_token_enriquecido.html" class="btn btn-neutral float-right" title="Fluxo do Token JWT Enriquecido" accesskey="n" rel="next">Próximo <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Direitos autorais .</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

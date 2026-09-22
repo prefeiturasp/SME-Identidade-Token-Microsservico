@@ -1,0 +1,1565 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt-BR" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Referência de código &mdash; SME-Identidade-Token-Microsservico</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2346ddef"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=71a39b36"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Buscar" href="search.html" />
+    <link rel="prev" title="API" href="controle/api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SME-Identidade-Token-Microsservico
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar documentos" aria-label="Pesquisar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="arquitetura/visao_geral.html">Visão Geral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="arquitetura/fluxo_token_enriquecido.html">Fluxo do Token JWT Enriquecido</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controle/index.html">Controle</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Referência de código</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-apps.core.api.views">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#apps.core.api.views.HealthCheckView"><code class="docutils literal notranslate"><span class="pre">HealthCheckView</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.core.api.views.HealthCheckView.authentication_classes"><code class="docutils literal notranslate"><span class="pre">HealthCheckView.authentication_classes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.core.api.views.HealthCheckView.permission_classes"><code class="docutils literal notranslate"><span class="pre">HealthCheckView.permission_classes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.core.api.views.HealthCheckView.get"><code class="docutils literal notranslate"><span class="pre">HealthCheckView.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.core.api.views.HealthCheckView.schema"><code class="docutils literal notranslate"><span class="pre">HealthCheckView.schema</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.core.api.serializers.HealthStatusSerializer"><code class="docutils literal notranslate"><span class="pre">HealthStatusSerializer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.core.api.serializers.HealthStatusSerializer.status"><code class="docutils literal notranslate"><span class="pre">HealthStatusSerializer.status</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-apps.autenticacao.api.autenticacao">Autenticação</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#apps.autenticacao.api.autenticacao.AutenticacaoApiKey"><code class="docutils literal notranslate"><span class="pre">AutenticacaoApiKey</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.autenticacao.api.autenticacao.AutenticacaoApiKey.authenticate"><code class="docutils literal notranslate"><span class="pre">AutenticacaoApiKey.authenticate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.autenticacao.api.autenticacao.AutenticacaoApiKey.authenticate_header"><code class="docutils literal notranslate"><span class="pre">AutenticacaoApiKey.authenticate_header()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-apps.perfil.models">Perfil</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.usuario_id"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.usuario_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.login"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.login</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.rf"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.rf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.nome"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.nome</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.cpf"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.cpf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.email"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.email</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.situacao"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.situacao</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.dre_codigo"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.dre_codigo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.contrato_externo"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.contrato_externo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.criado_em"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.criado_em</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.atualizado_em"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.atualizado_em</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.DoesNotExist</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.MultipleObjectsReturned</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.atributos_complementares"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.atributos_complementares</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.get_next_by_atualizado_em"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.get_next_by_atualizado_em()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.get_next_by_criado_em"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.get_next_by_criado_em()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.get_previous_by_atualizado_em"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.get_previous_by_atualizado_em()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.get_previous_by_criado_em"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.get_previous_by_criado_em()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.modulos_permissao"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.modulos_permissao</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.objects"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.objects</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario.perfis"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario.perfis</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.perfil.models.PerfilUsuario"><code class="docutils literal notranslate"><span class="pre">PerfilUsuario</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.PerfilUsuario.id"><code class="docutils literal notranslate"><span class="pre">PerfilUsuario.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.PerfilUsuario.usuario"><code class="docutils literal notranslate"><span class="pre">PerfilUsuario.usuario</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.PerfilUsuario.sistema_id"><code class="docutils literal notranslate"><span class="pre">PerfilUsuario.sistema_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.PerfilUsuario.nome"><code class="docutils literal notranslate"><span class="pre">PerfilUsuario.nome</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.PerfilUsuario.ativo"><code class="docutils literal notranslate"><span class="pre">PerfilUsuario.ativo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.PerfilUsuario.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">PerfilUsuario.DoesNotExist</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.PerfilUsuario.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">PerfilUsuario.MultipleObjectsReturned</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.PerfilUsuario.objects"><code class="docutils literal notranslate"><span class="pre">PerfilUsuario.objects</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.PerfilUsuario.usuario_id"><code class="docutils literal notranslate"><span class="pre">PerfilUsuario.usuario_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.id"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.usuario"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.usuario</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.sistema_id"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.sistema_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.sistema_nome"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.sistema_nome</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.modulo_id"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.modulo_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.modulo_nome"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.modulo_nome</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.consultar"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.consultar</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.inserir"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.inserir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.alterar"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.alterar</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.excluir"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.excluir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.DoesNotExist</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.MultipleObjectsReturned</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.objects"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.objects</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario.usuario_id"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario.usuario_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.perfil.api.views.ProjecaoUsuarioView"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuarioView</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.api.views.ProjecaoUsuarioView.get"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuarioView.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.api.views.ProjecaoUsuarioView.put"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuarioView.put()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.perfil.api.views.SistemasUsuarioView"><code class="docutils literal notranslate"><span class="pre">SistemasUsuarioView</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.api.views.SistemasUsuarioView.get"><code class="docutils literal notranslate"><span class="pre">SistemasUsuarioView.get()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.perfil.api.serializers.PerfilUsuarioSerializer"><code class="docutils literal notranslate"><span class="pre">PerfilUsuarioSerializer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.api.serializers.PerfilUsuarioSerializer.Meta"><code class="docutils literal notranslate"><span class="pre">PerfilUsuarioSerializer.Meta</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuarioSerializer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer.Meta"><code class="docutils literal notranslate"><span class="pre">ModuloPermissaoUsuarioSerializer.Meta</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.perfil.api.serializers.ProjecaoUsuarioSerializer"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuarioSerializer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.api.serializers.ProjecaoUsuarioSerializer.Meta"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuarioSerializer.Meta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.api.serializers.ProjecaoUsuarioSerializer.save"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuarioSerializer.save()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.perfil.api.serializers.SistemaUsuarioSerializer"><code class="docutils literal notranslate"><span class="pre">SistemaUsuarioSerializer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.perfil.api.serializers.SistemasUsuarioResponseSerializer"><code class="docutils literal notranslate"><span class="pre">SistemasUsuarioResponseSerializer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuarioReadSerializer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer.Meta"><code class="docutils literal notranslate"><span class="pre">ProjecaoUsuarioReadSerializer.Meta</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-apps.cache.chaves">Cache</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#apps.cache.chaves.token_enriquecido"><code class="docutils literal notranslate"><span class="pre">token_enriquecido()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.cache.services.CacheService"><code class="docutils literal notranslate"><span class="pre">CacheService</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.cache.services.CacheService.obter"><code class="docutils literal notranslate"><span class="pre">CacheService.obter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.cache.services.CacheService.salvar"><code class="docutils literal notranslate"><span class="pre">CacheService.salvar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.cache.services.CacheService.invalidar"><code class="docutils literal notranslate"><span class="pre">CacheService.invalidar()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-apps.tokens.services">Tokens</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.services.TokenEnriquecidoService"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoService</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.services.TokenEnriquecidoService.gerar"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoService.gerar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.services.TokenEnriquecidoService.invalidar"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoService.invalidar()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.token_enriquecido.compor_token_enriquecido"><code class="docutils literal notranslate"><span class="pre">compor_token_enriquecido()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.libs.jwt_validacao.obter_chave_publica_por_kid"><code class="docutils literal notranslate"><span class="pre">obter_chave_publica_por_kid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.libs.jwt_validacao.validar_token"><code class="docutils literal notranslate"><span class="pre">validar_token()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.libs.jwks.obter_jwks"><code class="docutils literal notranslate"><span class="pre">obter_jwks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.api.views.JWKSView"><code class="docutils literal notranslate"><span class="pre">JWKSView</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.views.JWKSView.authentication_classes"><code class="docutils literal notranslate"><span class="pre">JWKSView.authentication_classes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.views.JWKSView.permission_classes"><code class="docutils literal notranslate"><span class="pre">JWKSView.permission_classes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.views.JWKSView.get"><code class="docutils literal notranslate"><span class="pre">JWKSView.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.views.JWKSView.schema"><code class="docutils literal notranslate"><span class="pre">JWKSView.schema</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.api.views.TokenEnriquecidoView"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoView</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.views.TokenEnriquecidoView.post"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoView.post()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.api.views.ValidarTokenView"><code class="docutils literal notranslate"><span class="pre">ValidarTokenView</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.views.ValidarTokenView.post"><code class="docutils literal notranslate"><span class="pre">ValidarTokenView.post()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.api.serializers.ValidarTokenRequestSerializer"><code class="docutils literal notranslate"><span class="pre">ValidarTokenRequestSerializer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.ValidarTokenRequestSerializer.token"><code class="docutils literal notranslate"><span class="pre">ValidarTokenRequestSerializer.token</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.api.serializers.ValidarTokenResponseSerializer"><code class="docutils literal notranslate"><span class="pre">ValidarTokenResponseSerializer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.ValidarTokenResponseSerializer.valido"><code class="docutils literal notranslate"><span class="pre">ValidarTokenResponseSerializer.valido</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.ValidarTokenResponseSerializer.expirado"><code class="docutils literal notranslate"><span class="pre">ValidarTokenResponseSerializer.expirado</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.ValidarTokenResponseSerializer.claims"><code class="docutils literal notranslate"><span class="pre">ValidarTokenResponseSerializer.claims</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoRequestSerializer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.kc_user_id"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoRequestSerializer.kc_user_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.username"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoRequestSerializer.username</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.nome"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoRequestSerializer.nome</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.email"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoRequestSerializer.email</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.ativo"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoRequestSerializer.ativo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.cpf"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoRequestSerializer.cpf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.rf"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoRequestSerializer.rf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.perfil"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoRequestSerializer.perfil</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.sistema_id"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoRequestSerializer.sistema_id</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoResponseSerializer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer.token"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoResponseSerializer.token</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer.data_expiracao"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoResponseSerializer.data_expiracao</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer.permissoes"><code class="docutils literal notranslate"><span class="pre">TokenEnriquecidoResponseSerializer.permissoes</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SME-Identidade-Token-Microsservico</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Referência de código</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> Ver código-fonte da página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="referencia-de-codigo">
+<h1>Referência de código<a class="headerlink" href="#referencia-de-codigo" title="Link para este cabeçalho"></a></h1>
+<p>Esta página publica as docstrings dos principais módulos do projeto. Detalhes
+de endpoints, status HTTP e contratos externos devem permanecer no OpenAPI ou
+em páginas técnicas específicas.</p>
+<section id="module-apps.core.api.views">
+<span id="core"></span><h2>Core<a class="headerlink" href="#module-apps.core.api.views" title="Link para este cabeçalho"></a></h2>
+<p>Views da API da aplicação core.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.core.api.views.HealthCheckView">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.core.api.views.</span></span><span class="sig-name descname"><span class="pre">HealthCheckView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/core/api/views.html#HealthCheckView"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.core.api.views.HealthCheckView" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">APIView</span></code></p>
+<p>Disponibiliza o endpoint de verificação de saúde da aplicação.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.core.api.views.HealthCheckView.authentication_classes">
+<span class="sig-name descname"><span class="pre">authentication_classes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#apps.core.api.views.HealthCheckView.authentication_classes" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.core.api.views.HealthCheckView.permission_classes">
+<span class="sig-name descname"><span class="pre">permission_classes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[&lt;class</span> <span class="pre">'rest_framework.permissions.AllowAny'&gt;]</span></em><a class="headerlink" href="#apps.core.api.views.HealthCheckView.permission_classes" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.core.api.views.HealthCheckView.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/core/api/views.html#HealthCheckView.get"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.core.api.views.HealthCheckView.get" title="Link para esta definição"></a></dt>
+<dd><p>Retorna o estado de saúde da aplicação.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – Requisição HTTP recebida.</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Resposta HTTP contendo o status da aplicação.</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>Request</em>)</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Response</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.core.api.views.HealthCheckView.schema">
+<span class="sig-name descname"><span class="pre">schema</span></span><a class="headerlink" href="#apps.core.api.views.HealthCheckView.schema" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<p id="module-apps.core.api.serializers">Serializers base para todos os apps do core.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.core.api.serializers.HealthStatusSerializer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.core.api.serializers.</span></span><span class="sig-name descname"><span class="pre">HealthStatusSerializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/core/api/serializers.html#HealthStatusSerializer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.core.api.serializers.HealthStatusSerializer" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">Serializer</span></code></p>
+<p>Serializa o resultado da verificação de saúde da aplicação.</p>
+<p>Este serializer é utilizado pelo endpoint de health check para
+informar o estado atual da aplicação e de suas dependências.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.core.api.serializers.HealthStatusSerializer.status">
+<span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#apps.core.api.serializers.HealthStatusSerializer.status" title="Link para esta definição"></a></dt>
+<dd><p>Estado geral da aplicação. Pode assumir os valores
+<code class="docutils literal notranslate"><span class="pre">healthy</span></code>, <code class="docutils literal notranslate"><span class="pre">degraded</span></code> ou <code class="docutils literal notranslate"><span class="pre">unhealthy</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-apps.core.api.urls">Configuração de rotas da API da aplicação core.</p>
+</section>
+<section id="module-apps.autenticacao.api.autenticacao">
+<span id="autenticacao"></span><h2>Autenticação<a class="headerlink" href="#module-apps.autenticacao.api.autenticacao" title="Link para este cabeçalho"></a></h2>
+<p>Autenticação por API Key para os endpoints do SME-Identidade-Token.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.autenticacao.api.autenticacao.AutenticacaoApiKey">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.autenticacao.api.autenticacao.</span></span><span class="sig-name descname"><span class="pre">AutenticacaoApiKey</span></span><a class="reference internal" href="_modules/apps/autenticacao/api/autenticacao.html#AutenticacaoApiKey"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.autenticacao.api.autenticacao.AutenticacaoApiKey" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAuthentication</span></code></p>
+<p>Autentica requisições via API Key no header configurado.</p>
+<p>A chave é comparada com <code class="docutils literal notranslate"><span class="pre">settings.API_KEY</span></code>.
+O header utilizado é definido por <code class="docutils literal notranslate"><span class="pre">settings.API_KEY_HEADER</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.autenticacao.api.autenticacao.AutenticacaoApiKey.authenticate">
+<span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/autenticacao/api/autenticacao.html#AutenticacaoApiKey.authenticate"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.autenticacao.api.autenticacao.AutenticacaoApiKey.authenticate" title="Link para esta definição"></a></dt>
+<dd><p>Valida o API Key presente no header da requisição.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – Requisição HTTP recebida.</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tupla (usuário, None) se autenticado, None se header ausente.</p>
+</dd>
+<dt class="field-odd">Levanta<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AuthenticationFailed</strong> – Se o API Key for inválido.</p>
+</dd>
+<dt class="field-even">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>request</strong> (<em>Request</em>)</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[<em>_UsuarioApiKey</em>, None] | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.autenticacao.api.autenticacao.AutenticacaoApiKey.authenticate_header">
+<span class="sig-name descname"><span class="pre">authenticate_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/autenticacao/api/autenticacao.html#AutenticacaoApiKey.authenticate_header"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.autenticacao.api.autenticacao.AutenticacaoApiKey.authenticate_header" title="Link para esta definição"></a></dt>
+<dd><p>Retorna o nome do header de autenticação esperado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>Request</em>)</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-apps.perfil.models">
+<span id="perfil"></span><h2>Perfil<a class="headerlink" href="#module-apps.perfil.models" title="Link para este cabeçalho"></a></h2>
+<p>Modelos relacionados aos usuários, perfis e permissões.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.perfil.models.</span></span><span class="sig-name descname"><span class="pre">ProjecaoUsuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/models.html#ProjecaoUsuario"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Registra a projeção de um usuário.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.usuario_id">
+<span class="sig-name descname"><span class="pre">usuario_id</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.usuario_id" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.login">
+<span class="sig-name descname"><span class="pre">login</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.login" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.rf">
+<span class="sig-name descname"><span class="pre">rf</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.rf" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.nome">
+<span class="sig-name descname"><span class="pre">nome</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.nome" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.cpf">
+<span class="sig-name descname"><span class="pre">cpf</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.cpf" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.email">
+<span class="sig-name descname"><span class="pre">email</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.email" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.situacao">
+<span class="sig-name descname"><span class="pre">situacao</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.situacao" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.dre_codigo">
+<span class="sig-name descname"><span class="pre">dre_codigo</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.dre_codigo" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.contrato_externo">
+<span class="sig-name descname"><span class="pre">contrato_externo</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.contrato_externo" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.criado_em">
+<span class="sig-name descname"><span class="pre">criado_em</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.criado_em" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.atualizado_em">
+<span class="sig-name descname"><span class="pre">atualizado_em</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.atualizado_em" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.DoesNotExist">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.DoesNotExist" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.MultipleObjectsReturned">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.MultipleObjectsReturned" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.atributos_complementares">
+<span class="sig-name descname"><span class="pre">atributos_complementares</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.atributos_complementares" title="Link para esta definição"></a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">'children'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Parent.children</span></code> is a <code class="docutils literal notranslate"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.get_next_by_atualizado_em">
+<span class="sig-name descname"><span class="pre">get_next_by_atualizado_em</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">atualizado_em&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.get_next_by_atualizado_em" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.get_next_by_criado_em">
+<span class="sig-name descname"><span class="pre">get_next_by_criado_em</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">criado_em&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.get_next_by_criado_em" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.get_previous_by_atualizado_em">
+<span class="sig-name descname"><span class="pre">get_previous_by_atualizado_em</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">atualizado_em&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.get_previous_by_atualizado_em" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.get_previous_by_criado_em">
+<span class="sig-name descname"><span class="pre">get_previous_by_criado_em</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field=&lt;django.db.models.fields.DateTimeField:</span> <span class="pre">criado_em&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_next=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.get_previous_by_criado_em" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.modulos_permissao">
+<span class="sig-name descname"><span class="pre">modulos_permissao</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.modulos_permissao" title="Link para esta definição"></a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">'children'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Parent.children</span></code> is a <code class="docutils literal notranslate"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.objects" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ProjecaoUsuario.perfis">
+<span class="sig-name descname"><span class="pre">perfis</span></span><a class="headerlink" href="#apps.perfil.models.ProjecaoUsuario.perfis" title="Link para esta definição"></a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">'children'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Parent.children</span></code> is a <code class="docutils literal notranslate"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.models.PerfilUsuario">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.perfil.models.</span></span><span class="sig-name descname"><span class="pre">PerfilUsuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/models.html#PerfilUsuario"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.models.PerfilUsuario" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Registra os perfis atribuídos a um usuário.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.PerfilUsuario.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#apps.perfil.models.PerfilUsuario.id" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.PerfilUsuario.usuario">
+<span class="sig-name descname"><span class="pre">usuario</span></span><a class="headerlink" href="#apps.perfil.models.PerfilUsuario.usuario" title="Link para esta definição"></a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">'children'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Child.parent</span></code> is a <code class="docutils literal notranslate"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.PerfilUsuario.sistema_id">
+<span class="sig-name descname"><span class="pre">sistema_id</span></span><a class="headerlink" href="#apps.perfil.models.PerfilUsuario.sistema_id" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.PerfilUsuario.nome">
+<span class="sig-name descname"><span class="pre">nome</span></span><a class="headerlink" href="#apps.perfil.models.PerfilUsuario.nome" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.PerfilUsuario.ativo">
+<span class="sig-name descname"><span class="pre">ativo</span></span><a class="headerlink" href="#apps.perfil.models.PerfilUsuario.ativo" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="apps.perfil.models.PerfilUsuario.DoesNotExist">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#apps.perfil.models.PerfilUsuario.DoesNotExist" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="apps.perfil.models.PerfilUsuario.MultipleObjectsReturned">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#apps.perfil.models.PerfilUsuario.MultipleObjectsReturned" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.PerfilUsuario.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#apps.perfil.models.PerfilUsuario.objects" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.PerfilUsuario.usuario_id">
+<span class="sig-name descname"><span class="pre">usuario_id</span></span><a class="headerlink" href="#apps.perfil.models.PerfilUsuario.usuario_id" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.perfil.models.</span></span><span class="sig-name descname"><span class="pre">ModuloPermissaoUsuario</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/models.html#ModuloPermissaoUsuario"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Registra as permissões CRUD de um usuário por módulo de sistema.</p>
+<p>Modelo fiel à fonte real do CoreSSO (<code class="docutils literal notranslate"><span class="pre">SYS_GrupoPermissao</span></code> +
+<code class="docutils literal notranslate"><span class="pre">SYS_Modulo</span></code>): a permissão é concedida por grupo, sistema e
+módulo, com quatro ações independentes — não existe um “código de
+permissão” único no legado, a granularidade real é
+(sistema, módulo, ação). <code class="docutils literal notranslate"><span class="pre">sistema_id</span></code>/<code class="docutils literal notranslate"><span class="pre">modulo_id</span></code> usam
+nomenclatura de domínio, não os nomes de coluna de origem
+(<code class="docutils literal notranslate"><span class="pre">sis_id</span></code>/<code class="docutils literal notranslate"><span class="pre">mod_id</span></code>), mesmo padrão de <code class="docutils literal notranslate"><span class="pre">dre_codigo</span></code> em
+<code class="docutils literal notranslate"><span class="pre">ProjecaoUsuario</span></code>. <code class="docutils literal notranslate"><span class="pre">modulo_id</span></code> sozinho não é chave natural —
+o mesmo id é reaproveitado em módulos de sistemas diferentes no
+CoreSSO — por isso a unicidade é sempre pelo par
+(sistema_id, modulo_id).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.id" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.usuario">
+<span class="sig-name descname"><span class="pre">usuario</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.usuario" title="Link para esta definição"></a></dt>
+<dd><p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">'children'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Child.parent</span></code> is a <code class="docutils literal notranslate"><span class="pre">ForwardManyToOneDescriptor</span></code> instance.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.sistema_id">
+<span class="sig-name descname"><span class="pre">sistema_id</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.sistema_id" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.sistema_nome">
+<span class="sig-name descname"><span class="pre">sistema_nome</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.sistema_nome" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.modulo_id">
+<span class="sig-name descname"><span class="pre">modulo_id</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.modulo_id" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.modulo_nome">
+<span class="sig-name descname"><span class="pre">modulo_nome</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.modulo_nome" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.consultar">
+<span class="sig-name descname"><span class="pre">consultar</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.consultar" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.inserir">
+<span class="sig-name descname"><span class="pre">inserir</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.inserir" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.alterar">
+<span class="sig-name descname"><span class="pre">alterar</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.alterar" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.excluir">
+<span class="sig-name descname"><span class="pre">excluir</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.excluir" title="Link para esta definição"></a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.DoesNotExist">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DoesNotExist</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.DoesNotExist" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.MultipleObjectsReturned">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleObjectsReturned</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.MultipleObjectsReturned" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.objects">
+<span class="sig-name descname"><span class="pre">objects</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;django.db.models.manager.Manager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.objects" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.models.ModuloPermissaoUsuario.usuario_id">
+<span class="sig-name descname"><span class="pre">usuario_id</span></span><a class="headerlink" href="#apps.perfil.models.ModuloPermissaoUsuario.usuario_id" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<p id="module-apps.perfil.api.views">Views da API da aplicação perfil.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.views.ProjecaoUsuarioView">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.perfil.api.views.</span></span><span class="sig-name descname"><span class="pre">ProjecaoUsuarioView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/views.html#ProjecaoUsuarioView"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.views.ProjecaoUsuarioView" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">APIView</span></code></p>
+<p>Gerencia a projeção dos usuários.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.perfil.api.views.ProjecaoUsuarioView.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usuario_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/views.html#ProjecaoUsuarioView.get"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.views.ProjecaoUsuarioView.get" title="Link para esta definição"></a></dt>
+<dd><p>Consulta a projeção de um usuário.</p>
+<p>Quando <code class="docutils literal notranslate"><span class="pre">sistema_id</span></code> é informado via query string, somente
+os perfis associados ao sistema são retornados.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – Requisição HTTP recebida.</p></li>
+<li><p><strong>usuario_id</strong> – Identificador único do usuário.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Resposta HTTP contendo a projeção de um usuário.
+Retorna 400 caso a projeção não seja encontrada.</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>Request</em>)</p></li>
+<li><p><strong>usuario_id</strong> (<em>UUID</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Response</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.perfil.api.views.ProjecaoUsuarioView.put">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usuario_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/views.html#ProjecaoUsuarioView.put"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.views.ProjecaoUsuarioView.put" title="Link para esta definição"></a></dt>
+<dd><p>Cria ou atualiza a projeção de um usuário.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – Requisição HTTP recebida.</p></li>
+<li><p><strong>usuario_id</strong> – Identificador único do usuário.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Resposta HTTP indicando o resultado da sincronização.</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>Request</em>)</p></li>
+<li><p><strong>usuario_id</strong> (<em>UUID</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Response</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.views.SistemasUsuarioView">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.perfil.api.views.</span></span><span class="sig-name descname"><span class="pre">SistemasUsuarioView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/views.html#SistemasUsuarioView"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.views.SistemasUsuarioView" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">APIView</span></code></p>
+<p>Consulta os sistemas distintos associados a um usuário.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.perfil.api.views.SistemasUsuarioView.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usuario_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/views.html#SistemasUsuarioView.get"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.views.SistemasUsuarioView.get" title="Link para esta definição"></a></dt>
+<dd><p>Consulta os sistemas distintos de um usuário.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – Requisição HTTP recebida.</p></li>
+<li><p><strong>usuario_id</strong> – Identificador único do usuário.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Resposta HTTP contendo os sistemas do usuário. Retorna
+404 caso a projeção não exista para o usuário informado.</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>Request</em>)</p></li>
+<li><p><strong>usuario_id</strong> (<em>UUID</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Response</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-apps.perfil.api.serializers">Serializers do domínio de autorização.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.PerfilUsuarioSerializer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.perfil.api.serializers.</span></span><span class="sig-name descname"><span class="pre">PerfilUsuarioSerializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/serializers.html#PerfilUsuarioSerializer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.serializers.PerfilUsuarioSerializer" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelSerializer</span></code></p>
+<p>Representa os perfis associados a um usuário.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.PerfilUsuarioSerializer.Meta">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="_modules/apps/perfil/api/serializers.html#PerfilUsuarioSerializer.Meta"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.serializers.PerfilUsuarioSerializer.Meta" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.PerfilUsuarioSerializer.Meta.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#apps.perfil.api.serializers.PerfilUsuarioSerializer.Meta.model" title="Link para esta definição"></a></dt>
+<dd><p>apelido de <a class="reference internal" href="#apps.perfil.models.PerfilUsuario" title="apps.perfil.models.PerfilUsuario"><code class="xref py py-class docutils literal notranslate"><span class="pre">PerfilUsuario</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.PerfilUsuarioSerializer.Meta.fields">
+<span class="sig-name descname"><span class="pre">fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('id',</span> <span class="pre">'sistema_id',</span> <span class="pre">'nome',</span> <span class="pre">'ativo')</span></em><a class="headerlink" href="#apps.perfil.api.serializers.PerfilUsuarioSerializer.Meta.fields" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.perfil.api.serializers.</span></span><span class="sig-name descname"><span class="pre">ModuloPermissaoUsuarioSerializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/serializers.html#ModuloPermissaoUsuarioSerializer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelSerializer</span></code></p>
+<p>Representa as permissões de um módulo concedidas a um usuário.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer.Meta">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="_modules/apps/perfil/api/serializers.html#ModuloPermissaoUsuarioSerializer.Meta"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer.Meta" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer.Meta.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer.Meta.model" title="Link para esta definição"></a></dt>
+<dd><p>apelido de <a class="reference internal" href="#apps.perfil.models.ModuloPermissaoUsuario" title="apps.perfil.models.ModuloPermissaoUsuario"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModuloPermissaoUsuario</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer.Meta.fields">
+<span class="sig-name descname"><span class="pre">fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('sistema_id',</span> <span class="pre">'sistema_nome',</span> <span class="pre">'modulo_id',</span> <span class="pre">'modulo_nome',</span> <span class="pre">'consultar',</span> <span class="pre">'inserir',</span> <span class="pre">'alterar',</span> <span class="pre">'excluir')</span></em><a class="headerlink" href="#apps.perfil.api.serializers.ModuloPermissaoUsuarioSerializer.Meta.fields" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ProjecaoUsuarioSerializer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.perfil.api.serializers.</span></span><span class="sig-name descname"><span class="pre">ProjecaoUsuarioSerializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/serializers.html#ProjecaoUsuarioSerializer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.serializers.ProjecaoUsuarioSerializer" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelSerializer</span></code></p>
+<p>Representa a projeção de um usuário.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ProjecaoUsuarioSerializer.Meta">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="_modules/apps/perfil/api/serializers.html#ProjecaoUsuarioSerializer.Meta"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.serializers.ProjecaoUsuarioSerializer.Meta" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ProjecaoUsuarioSerializer.Meta.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#apps.perfil.api.serializers.ProjecaoUsuarioSerializer.Meta.model" title="Link para esta definição"></a></dt>
+<dd><p>apelido de <a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario" title="apps.perfil.models.ProjecaoUsuario"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjecaoUsuario</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ProjecaoUsuarioSerializer.Meta.fields">
+<span class="sig-name descname"><span class="pre">fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('login',</span> <span class="pre">'rf',</span> <span class="pre">'nome',</span> <span class="pre">'cpf',</span> <span class="pre">'email',</span> <span class="pre">'situacao',</span> <span class="pre">'dre_codigo',</span> <span class="pre">'contrato_externo',</span> <span class="pre">'perfis',</span> <span class="pre">'permissoes')</span></em><a class="headerlink" href="#apps.perfil.api.serializers.ProjecaoUsuarioSerializer.Meta.fields" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ProjecaoUsuarioSerializer.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/serializers.html#ProjecaoUsuarioSerializer.save"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.serializers.ProjecaoUsuarioSerializer.save" title="Link para esta definição"></a></dt>
+<dd><p>Cria ou atualiza a projeção do usuário.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kwargs</strong> (<em>Any</em>)</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario" title="apps.perfil.models.ProjecaoUsuario"><em>ProjecaoUsuario</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.SistemaUsuarioSerializer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.perfil.api.serializers.</span></span><span class="sig-name descname"><span class="pre">SistemaUsuarioSerializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/serializers.html#SistemaUsuarioSerializer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.serializers.SistemaUsuarioSerializer" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">Serializer</span></code></p>
+<p>Representa um sistema distinto associado a um usuário.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.SistemasUsuarioResponseSerializer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.perfil.api.serializers.</span></span><span class="sig-name descname"><span class="pre">SistemasUsuarioResponseSerializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/serializers.html#SistemasUsuarioResponseSerializer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.serializers.SistemasUsuarioResponseSerializer" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">Serializer</span></code></p>
+<p>Representa a lista de sistemas distintos de um usuário.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.perfil.api.serializers.</span></span><span class="sig-name descname"><span class="pre">ProjecaoUsuarioReadSerializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/perfil/api/serializers.html#ProjecaoUsuarioReadSerializer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelSerializer</span></code></p>
+<p>Representa a projeção de usuário para consulta.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer.Meta">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><a class="reference internal" href="_modules/apps/perfil/api/serializers.html#ProjecaoUsuarioReadSerializer.Meta"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer.Meta" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer.Meta.model">
+<span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer.Meta.model" title="Link para esta definição"></a></dt>
+<dd><p>apelido de <a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario" title="apps.perfil.models.ProjecaoUsuario"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProjecaoUsuario</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer.Meta.fields">
+<span class="sig-name descname"><span class="pre">fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('usuario_id',</span> <span class="pre">'login',</span> <span class="pre">'rf',</span> <span class="pre">'nome',</span> <span class="pre">'cpf',</span> <span class="pre">'email',</span> <span class="pre">'situacao',</span> <span class="pre">'dre_codigo',</span> <span class="pre">'contrato_externo',</span> <span class="pre">'perfis',</span> <span class="pre">'permissoes')</span></em><a class="headerlink" href="#apps.perfil.api.serializers.ProjecaoUsuarioReadSerializer.Meta.fields" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-apps.perfil.api.urls">Configuração de rotas da API da aplicação perfil.</p>
+</section>
+<section id="module-apps.cache.chaves">
+<span id="cache"></span><h2>Cache<a class="headerlink" href="#module-apps.cache.chaves" title="Link para este cabeçalho"></a></h2>
+<p>Funções para geração das chaves utilizadas no cache.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="apps.cache.chaves.token_enriquecido">
+<span class="sig-prename descclassname"><span class="pre">apps.cache.chaves.</span></span><span class="sig-name descname"><span class="pre">token_enriquecido</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usuario_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/cache/chaves.html#token_enriquecido"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.cache.chaves.token_enriquecido" title="Link para esta definição"></a></dt>
+<dd><p>Retorna a chave de cache do token enriquecido.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>usuario_id</strong> – Identificador único do usuário.</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Chave utilizada para armazenar o token enriquecido em cache.</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>usuario_id</strong> (<em>UUID</em>)</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p id="module-apps.cache.services">Serviços responsáveis pelas operações de cache.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.cache.services.CacheService">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.cache.services.</span></span><span class="sig-name descname"><span class="pre">CacheService</span></span><a class="reference internal" href="_modules/apps/cache/services.html#CacheService"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.cache.services.CacheService" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Serviço responsável pelas operações de cache.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.cache.services.CacheService.obter">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">obter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/cache/services.html#CacheService.obter"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.cache.services.CacheService.obter" title="Link para esta definição"></a></dt>
+<dd><p>Obtém um valor armazenado em cache.</p>
+<p>Caso o serviço de cache esteja indisponível, retorna <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+permitindo que a aplicação continue normalmente.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chave</strong> – Chave utilizada para localizar o valor em cache.</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Valor armazenado ou <code class="docutils literal notranslate"><span class="pre">None</span></code> caso não exista ou ocorra alguma
+falha durante a consulta.</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chave</strong> (<em>str</em>)</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>object | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.cache.services.CacheService.salvar">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">salvar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/cache/services.html#CacheService.salvar"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.cache.services.CacheService.salvar" title="Link para esta definição"></a></dt>
+<dd><p>Armazena um valor em cache.</p>
+<p>Caso o cache esteja indisponível, registra a ocorrência em log sem
+interromper o fluxo da aplicação.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chave</strong> – Chave utilizada para armazenamento.</p></li>
+<li><p><strong>valor</strong> – Valor que será armazenado.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chave</strong> (<em>str</em>)</p></li>
+<li><p><strong>valor</strong> (<em>object</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.cache.services.CacheService.invalidar">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">invalidar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/cache/services.html#CacheService.invalidar"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.cache.services.CacheService.invalidar" title="Link para esta definição"></a></dt>
+<dd><p>Remove um valor armazenado em cache.</p>
+<p>Caso o cache esteja indisponível, registra a ocorrência em log sem
+interromper o fluxo da aplicação.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chave</strong> – Chave do registro que será removido.</p>
+</dd>
+<dt class="field-even">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>chave</strong> (<em>str</em>)</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-apps.tokens.services">
+<span id="tokens"></span><h2>Tokens<a class="headerlink" href="#module-apps.tokens.services" title="Link para este cabeçalho"></a></h2>
+<p>Serviços responsáveis pela geração do Token Enriquecido.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.tokens.services.TokenEnriquecidoService">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.tokens.services.</span></span><span class="sig-name descname"><span class="pre">TokenEnriquecidoService</span></span><a class="reference internal" href="_modules/apps/tokens/services.html#TokenEnriquecidoService"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.services.TokenEnriquecidoService" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Serviço responsável por gerar o Token Enriquecido.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.tokens.services.TokenEnriquecidoService.gerar">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gerar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usuario_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conta_keycloak</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perfil</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sistema_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/services.html#TokenEnriquecidoService.gerar"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.services.TokenEnriquecidoService.gerar" title="Link para esta definição"></a></dt>
+<dd><p>Gera um Token Enriquecido para um usuário.</p>
+<p>O Token Enriquecido é obtido do cache quando disponível.
+Caso contrário, a projeção do usuário é consultada, um novo
+token é gerado e armazenado em cache.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>usuario_id</strong> – Identificador único do usuário.</p></li>
+<li><p><strong>conta_keycloak</strong> – Dados da conta autenticada no Keycloak.</p></li>
+<li><p><strong>perfil</strong> – Perfil selecionado para composição do token.</p></li>
+<li><p><strong>sistema_id</strong> – Sistema utilizado para filtrar as permissões,
+quando informado.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dados do Token Enriquecido contendo o JWT, a data de
+expiração e as permissões do usuário.</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>usuario_id</strong> (<em>UUID</em>)</p></li>
+<li><p><strong>conta_keycloak</strong> (<em>dict</em>)</p></li>
+<li><p><strong>perfil</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>sistema_id</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.tokens.services.TokenEnriquecidoService.invalidar">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">invalidar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usuario_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/services.html#TokenEnriquecidoService.invalidar"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.services.TokenEnriquecidoService.invalidar" title="Link para esta definição"></a></dt>
+<dd><p>Invalida o Token Enriquecido em cache de um usuário.</p>
+<p>Remove do cache o Token Enriquecido associado ao usuário,
+garantindo que uma nova versão seja gerada na próxima
+solicitação.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>usuario_id</strong> – Identificador único do usuário.</p>
+</dd>
+<dt class="field-even">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>usuario_id</strong> (<em>UUID</em>)</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-apps.tokens.token_enriquecido">Compõe e assina o JWT enriquecido do Token-MS.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="apps.tokens.token_enriquecido.compor_token_enriquecido">
+<span class="sig-prename descclassname"><span class="pre">apps.tokens.token_enriquecido.</span></span><span class="sig-name descname"><span class="pre">compor_token_enriquecido</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conta_keycloak</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projecao_usuario</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perfil</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/token_enriquecido.html#compor_token_enriquecido"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.token_enriquecido.compor_token_enriquecido" title="Link para esta definição"></a></dt>
+<dd><p>Compõe e assina um JWT enriquecido.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>conta_keycloak</strong> – Dados da conta retornados pelo Keycloak.</p></li>
+<li><p><strong>projecao_usuario</strong> – Projeção do usuário utilizada para enriquecer token.</p></li>
+<li><p><strong>perfil</strong> – Identificador do perfil selecionado.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Uma tupla contendo o JWT assinado, sua data de expiração
+e as permissões associadas ao usuário.</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>conta_keycloak</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>projecao_usuario</strong> (<a class="reference internal" href="#apps.perfil.models.ProjecaoUsuario" title="apps.perfil.models.ProjecaoUsuario"><em>ProjecaoUsuario</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>perfil</strong> (<em>str</em><em> | </em><em>None</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[str, <em>datetime</em>, list[dict[str, <em>Any</em>]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Utilitários para gerenciamento das chaves utilizadas na assinatura JWT.</p>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.tokens.libs.jwt_chaves.</span></span><span class="sig-name descname"><span class="pre">ChavePublica</span></span><a class="reference internal" href="_modules/apps/tokens/libs/jwt_chaves.html#ChavePublica"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>Representa uma chave pública disponível para publicação via JWKS.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">kid</span></span></dt>
+<dd><p>Identificador único da chave.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">algoritmo</span></span></dt>
+<dd><p>Algoritmo utilizado para assinatura do JWT.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">public_key</span></span></dt>
+<dd><p>Conteúdo da chave pública em formato PEM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">kid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">algoritmo</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">public_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">apps.tokens.libs.jwt_chaves.</span></span><span class="sig-name descname"><span class="pre">obter_chave_privada</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/libs/jwt_chaves.html#obter_chave_privada"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a></dt>
+<dd><p>Obtém a chave privada utilizada para assinar JWTs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Retorna<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Conteúdo da chave privada em formato PEM.</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">apps.tokens.libs.jwt_chaves.</span></span><span class="sig-name descname"><span class="pre">listar_chaves_publicas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/libs/jwt_chaves.html#listar_chaves_publicas"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a></dt>
+<dd><p>Lista as chaves públicas disponíveis para publicação no JWKS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Retorna<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lista contendo as chaves públicas disponíveis para publicação.</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<em>ChavePublica</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p id="module-apps.tokens.libs.jwt_validacao">Utilitários para validação de tokens JWT enriquecidos.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="apps.tokens.libs.jwt_validacao.obter_chave_publica_por_kid">
+<span class="sig-prename descclassname"><span class="pre">apps.tokens.libs.jwt_validacao.</span></span><span class="sig-name descname"><span class="pre">obter_chave_publica_por_kid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/libs/jwt_validacao.html#obter_chave_publica_por_kid"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.libs.jwt_validacao.obter_chave_publica_por_kid" title="Link para esta definição"></a></dt>
+<dd><p>Obtém a chave pública correspondente ao identificador informado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kid</strong> – Identificador da chave pública.</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Chave pública em formato PEM.</p>
+</dd>
+<dt class="field-odd">Levanta<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>jwt.InvalidTokenError</strong> – Se nenhuma chave pública for encontrada para o
+    identificador informado.</p>
+</dd>
+<dt class="field-even">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>kid</strong> (<em>str</em>)</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="apps.tokens.libs.jwt_validacao.validar_token">
+<span class="sig-prename descclassname"><span class="pre">apps.tokens.libs.jwt_validacao.</span></span><span class="sig-name descname"><span class="pre">validar_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/libs/jwt_validacao.html#validar_token"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.libs.jwt_validacao.validar_token" title="Link para esta definição"></a></dt>
+<dd><p>Valida a assinatura e a expiração de um JWT enriquecido.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> – Token JWT a ser validado.</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Claims presentes no token.</p>
+</dd>
+<dt class="field-odd">Levanta<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>jwt.InvalidTokenError</strong> – Se o token não possuir um <code class="docutils literal notranslate"><span class="pre">kid</span></code> válido ou não
+    for possível localizar a chave pública correspondente.</p></li>
+<li><p><strong>jwt.PyJWTError</strong> – Se a validação da assinatura ou das claims falhar.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>token</strong> (<em>str</em>)</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, <em>Any</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p id="module-apps.tokens.libs.jwks">Utilitários para geração de um JSON Web Key Set (JWKS).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="apps.tokens.libs.jwks.obter_jwks">
+<span class="sig-prename descclassname"><span class="pre">apps.tokens.libs.jwks.</span></span><span class="sig-name descname"><span class="pre">obter_jwks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/libs/jwks.html#obter_jwks"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.libs.jwks.obter_jwks" title="Link para esta definição"></a></dt>
+<dd><p>Obtém o conjunto de chaves públicas no formato JWKS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Retorna<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dicionário contendo a propriedade <code class="docutils literal notranslate"><span class="pre">keys</span></code> com todas as chaves
+públicas disponíveis para validação de JWTs.</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, list[dict[str, <em>Any</em>]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p id="module-apps.tokens.api.views">Views responsáveis pela publicação do endpoint JWKS.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.tokens.api.views.JWKSView">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.tokens.api.views.</span></span><span class="sig-name descname"><span class="pre">JWKSView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/api/views.html#JWKSView"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.api.views.JWKSView" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">APIView</span></code></p>
+<p>Publica o conjunto de chaves públicas no formato JWKS.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.views.JWKSView.authentication_classes">
+<span class="sig-name descname"><span class="pre">authentication_classes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#apps.tokens.api.views.JWKSView.authentication_classes" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.views.JWKSView.permission_classes">
+<span class="sig-name descname"><span class="pre">permission_classes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[&lt;class</span> <span class="pre">'rest_framework.permissions.AllowAny'&gt;]</span></em><a class="headerlink" href="#apps.tokens.api.views.JWKSView.permission_classes" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.tokens.api.views.JWKSView.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/api/views.html#JWKSView.get"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.api.views.JWKSView.get" title="Link para esta definição"></a></dt>
+<dd><p>Retorna o conjunto de chaves públicas disponíveis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – Requisição HTTP.</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Resposta contendo o documento JWKS.</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>Request</em>)</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Response</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.views.JWKSView.schema">
+<span class="sig-name descname"><span class="pre">schema</span></span><a class="headerlink" href="#apps.tokens.api.views.JWKSView.schema" title="Link para esta definição"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.tokens.api.views.TokenEnriquecidoView">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.tokens.api.views.</span></span><span class="sig-name descname"><span class="pre">TokenEnriquecidoView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/api/views.html#TokenEnriquecidoView"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.api.views.TokenEnriquecidoView" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">APIView</span></code></p>
+<p>Gera um JWT enriquecido com dados da projeção do usuário.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.tokens.api.views.TokenEnriquecidoView.post">
+<span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usuario_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/api/views.html#TokenEnriquecidoView.post"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.api.views.TokenEnriquecidoView.post" title="Link para esta definição"></a></dt>
+<dd><p>Gera um JWT enriquecido para o usuário informado.</p>
+<p>O Token-MS busca a projeção de autorização do usuário,
+compõe as claims necessárias e retorna o token JWT assinado
+juntamente com sua data de expiração.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – Requisição HTTP contendo os dados da conta Keycloak.</p></li>
+<li><p><strong>usuario_id</strong> – Identificador único do usuário.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Resposta contendo o token enriquecido gerado, sua data de
+expiração e as permissões associadas ao usuário.</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>Request</em>)</p></li>
+<li><p><strong>usuario_id</strong> (<em>UUID</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Response</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.tokens.api.views.ValidarTokenView">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.tokens.api.views.</span></span><span class="sig-name descname"><span class="pre">ValidarTokenView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/api/views.html#ValidarTokenView"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.api.views.ValidarTokenView" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">APIView</span></code></p>
+<p>Valida um JWT enriquecido.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="apps.tokens.api.views.ValidarTokenView.post">
+<span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/api/views.html#ValidarTokenView.post"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.api.views.ValidarTokenView.post" title="Link para esta definição"></a></dt>
+<dd><p>Valida um JWT enriquecido.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – Requisição HTTP recebida.</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Resposta contendo o resultado da validação do token.</p>
+</dd>
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>Request</em>)</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Response</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-apps.tokens.api.serializers">Serializers utilizados na validação de tokens JWT.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.ValidarTokenRequestSerializer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.tokens.api.serializers.</span></span><span class="sig-name descname"><span class="pre">ValidarTokenRequestSerializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/api/serializers.html#ValidarTokenRequestSerializer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.api.serializers.ValidarTokenRequestSerializer" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">Serializer</span></code></p>
+<p>Representa o payload da requisição de validação de um JWT.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.ValidarTokenRequestSerializer.token">
+<span class="sig-name descname"><span class="pre">token</span></span><a class="headerlink" href="#apps.tokens.api.serializers.ValidarTokenRequestSerializer.token" title="Link para esta definição"></a></dt>
+<dd><p>Token JWT a ser validado.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.ValidarTokenResponseSerializer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.tokens.api.serializers.</span></span><span class="sig-name descname"><span class="pre">ValidarTokenResponseSerializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/api/serializers.html#ValidarTokenResponseSerializer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.api.serializers.ValidarTokenResponseSerializer" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">Serializer</span></code></p>
+<p>Representa o resultado da validação de um JWT.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.ValidarTokenResponseSerializer.valido">
+<span class="sig-name descname"><span class="pre">valido</span></span><a class="headerlink" href="#apps.tokens.api.serializers.ValidarTokenResponseSerializer.valido" title="Link para esta definição"></a></dt>
+<dd><p>Indica se o token é válido.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.ValidarTokenResponseSerializer.expirado">
+<span class="sig-name descname"><span class="pre">expirado</span></span><a class="headerlink" href="#apps.tokens.api.serializers.ValidarTokenResponseSerializer.expirado" title="Link para esta definição"></a></dt>
+<dd><p>Indica se o token está expirado.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.ValidarTokenResponseSerializer.claims">
+<span class="sig-name descname"><span class="pre">claims</span></span><a class="headerlink" href="#apps.tokens.api.serializers.ValidarTokenResponseSerializer.claims" title="Link para esta definição"></a></dt>
+<dd><p>Claims extraídas do token, quando disponíveis.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.tokens.api.serializers.</span></span><span class="sig-name descname"><span class="pre">TokenEnriquecidoRequestSerializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/api/serializers.html#TokenEnriquecidoRequestSerializer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">Serializer</span></code></p>
+<p>Representa os dados utilizados para geração do JWT enriquecido.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.kc_user_id">
+<span class="sig-name descname"><span class="pre">kc_user_id</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.kc_user_id" title="Link para esta definição"></a></dt>
+<dd><p>Identificador do usuário no Keycloak.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.username">
+<span class="sig-name descname"><span class="pre">username</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.username" title="Link para esta definição"></a></dt>
+<dd><p>Usuário/login da conta.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.nome">
+<span class="sig-name descname"><span class="pre">nome</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.nome" title="Link para esta definição"></a></dt>
+<dd><p>Nome completo do usuário.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.email">
+<span class="sig-name descname"><span class="pre">email</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.email" title="Link para esta definição"></a></dt>
+<dd><p>E-mail do usuário.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.ativo">
+<span class="sig-name descname"><span class="pre">ativo</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.ativo" title="Link para esta definição"></a></dt>
+<dd><p>Indica se a conta está ativa.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.cpf">
+<span class="sig-name descname"><span class="pre">cpf</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.cpf" title="Link para esta definição"></a></dt>
+<dd><p>CPF do usuário, quando cadastrado no Keycloak.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.rf">
+<span class="sig-name descname"><span class="pre">rf</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.rf" title="Link para esta definição"></a></dt>
+<dd><p>Registro funcional do usuário, quando cadastrado no Keycloak.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.perfil">
+<span class="sig-name descname"><span class="pre">perfil</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.perfil" title="Link para esta definição"></a></dt>
+<dd><p>Identificador do perfil selecionado, quando já houver
+um perfil escolhido (ausente no momento do login).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.sistema_id">
+<span class="sig-name descname"><span class="pre">sistema_id</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer.sistema_id" title="Link para esta definição"></a></dt>
+<dd><p>Identificador do sistema, quando informado.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">apps.tokens.api.serializers.</span></span><span class="sig-name descname"><span class="pre">TokenEnriquecidoResponseSerializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/apps/tokens/api/serializers.html#TokenEnriquecidoResponseSerializer"><span class="viewcode-link"><span class="pre">[código-fonte]</span></span></a><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer" title="Link para esta definição"></a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">Serializer</span></code></p>
+<p>Representa a resposta da geração do token enriquecido.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer.token">
+<span class="sig-name descname"><span class="pre">token</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer.token" title="Link para esta definição"></a></dt>
+<dd><p>JWT enriquecido gerado e assinado pelo Token-MS.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer.data_expiracao">
+<span class="sig-name descname"><span class="pre">data_expiracao</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer.data_expiracao" title="Link para esta definição"></a></dt>
+<dd><p>Data e hora em que o token enriquecido expira.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer.permissoes">
+<span class="sig-name descname"><span class="pre">permissoes</span></span><a class="headerlink" href="#apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer.permissoes" title="Link para esta definição"></a></dt>
+<dd><p>Lista de permissões associadas ao usuário.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-apps.tokens.api.urls">Configuração de rotas da API da aplicação tokens.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Rodapé">
+        <a href="controle/api.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Direitos autorais .</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

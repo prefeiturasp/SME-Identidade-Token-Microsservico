@@ -1,0 +1,271 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt-BR" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apps.tokens.services &mdash; SME-Identidade-Token-Microsservico</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=2346ddef"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/translations.js?v=71a39b36"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../genindex.html" />
+    <link rel="search" title="Buscar" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            SME-Identidade-Token-Microsservico
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar documentos" aria-label="Pesquisar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../arquitetura/visao_geral.html">Visão Geral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../arquitetura/fluxo_token_enriquecido.html">Fluxo do Token JWT Enriquecido</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../controle/index.html">Controle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Referência de código</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SME-Identidade-Token-Microsservico</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Código do módulo</a></li>
+      <li class="breadcrumb-item active">apps.tokens.services</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código-fonte para apps.tokens.services</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Serviços responsáveis pela geração do Token Enriquecido."""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Prefetch</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">apps.cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">chaves</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">apps.cache.services</span><span class="w"> </span><span class="kn">import</span> <span class="n">CacheService</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">apps.perfil.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModuloPermissaoUsuario</span><span class="p">,</span> <span class="n">ProjecaoUsuario</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">apps.tokens.token_enriquecido</span><span class="w"> </span><span class="kn">import</span> <span class="n">compor_token_enriquecido</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TokenEnriquecidoService">
+<a class="viewcode-back" href="../../../api.html#apps.tokens.services.TokenEnriquecidoService">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TokenEnriquecidoService</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Serviço responsável por gerar o Token Enriquecido."""</span>
+
+<div class="viewcode-block" id="TokenEnriquecidoService.gerar">
+<a class="viewcode-back" href="../../../api.html#apps.tokens.services.TokenEnriquecidoService.gerar">[documentos]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gerar</span><span class="p">(</span>
+        <span class="n">usuario_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
+        <span class="n">conta_keycloak</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">perfil</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sistema_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Gera um Token Enriquecido para um usuário.</span>
+
+<span class="sd">        O Token Enriquecido é obtido do cache quando disponível.</span>
+<span class="sd">        Caso contrário, a projeção do usuário é consultada, um novo</span>
+<span class="sd">        token é gerado e armazenado em cache.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            usuario_id: Identificador único do usuário.</span>
+<span class="sd">            conta_keycloak: Dados da conta autenticada no Keycloak.</span>
+<span class="sd">            perfil: Perfil selecionado para composição do token.</span>
+<span class="sd">            sistema_id: Sistema utilizado para filtrar as permissões,</span>
+<span class="sd">                quando informado.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dados do Token Enriquecido contendo o JWT, a data de</span>
+<span class="sd">            expiração e as permissões do usuário.</span>
+<span class="sd">        """</span>
+        <span class="n">chave</span> <span class="o">=</span> <span class="n">chaves</span><span class="o">.</span><span class="n">token_enriquecido</span><span class="p">(</span><span class="n">usuario_id</span><span class="p">)</span>
+
+        <span class="n">resposta</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+            <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">CacheService</span><span class="o">.</span><span class="n">obter</span><span class="p">(</span><span class="n">chave</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">resposta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">"Cache hit para o Token Enriquecido do usuário </span><span class="si">%s</span><span class="s2">."</span><span class="p">,</span>
+                <span class="n">usuario_id</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">resposta</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">"Cache miss para o Token Enriquecido do usuário </span><span class="si">%s</span><span class="s2">."</span><span class="p">,</span>
+            <span class="n">usuario_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">projecao_usuario</span> <span class="o">=</span> <span class="n">TokenEnriquecidoService</span><span class="o">.</span><span class="n">_obter_projecao_usuario</span><span class="p">(</span>
+            <span class="n">usuario_id</span><span class="p">,</span>
+            <span class="n">sistema_id</span><span class="o">=</span><span class="n">sistema_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">token</span><span class="p">,</span> <span class="n">expiracao</span><span class="p">,</span> <span class="n">permissoes</span> <span class="o">=</span> <span class="n">compor_token_enriquecido</span><span class="p">(</span>
+            <span class="n">conta_keycloak</span><span class="o">=</span><span class="n">conta_keycloak</span><span class="p">,</span>
+            <span class="n">projecao_usuario</span><span class="o">=</span><span class="n">projecao_usuario</span><span class="p">,</span>
+            <span class="n">perfil</span><span class="o">=</span><span class="n">perfil</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">"Token Enriquecido gerado para o usuário </span><span class="si">%s</span><span class="s2">."</span><span class="p">,</span>
+            <span class="n">usuario_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">resposta</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"token"</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span>
+            <span class="s2">"data_expiracao"</span><span class="p">:</span> <span class="n">expiracao</span><span class="p">,</span>
+            <span class="s2">"permissoes"</span><span class="p">:</span> <span class="n">permissoes</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">CacheService</span><span class="o">.</span><span class="n">salvar</span><span class="p">(</span>
+            <span class="n">chave</span><span class="o">=</span><span class="n">chave</span><span class="p">,</span>
+            <span class="n">valor</span><span class="o">=</span><span class="n">resposta</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">"Token Enriquecido armazenado em cache para o usuário </span><span class="si">%s</span><span class="s2">."</span><span class="p">,</span>
+            <span class="n">usuario_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">resposta</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_obter_projecao_usuario</span><span class="p">(</span>
+        <span class="n">usuario_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
+        <span class="n">sistema_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjecaoUsuario</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Obtém a projeção de um usuário.</span>
+
+<span class="sd">        A projeção é carregada juntamente com seus perfis e módulos de</span>
+<span class="sd">        permissão para evitar consultas adicionais durante a geração do</span>
+<span class="sd">        Token Enriquecido.</span>
+
+<span class="sd">        Quando ``sistema_id`` é informado, somente os módulos de permissão</span>
+<span class="sd">        associados ao sistema são carregados.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            usuario_id: Identificador único do usuário.</span>
+<span class="sd">            sistema_id: Identificador do sistema utilizado para filtrar</span>
+<span class="sd">                os módulos de permissão.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Projeção do usuário ou ``None`` caso não exista.</span>
+<span class="sd">        """</span>
+        <span class="n">permissoes_queryset</span> <span class="o">=</span> <span class="n">ModuloPermissaoUsuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">sistema_id</span><span class="p">:</span>
+            <span class="n">permissoes_queryset</span> <span class="o">=</span> <span class="n">permissoes_queryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="n">sistema_id</span><span class="o">=</span><span class="n">sistema_id</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">ProjecaoUsuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">prefetch_related</span><span class="p">(</span>
+                <span class="s2">"perfis"</span><span class="p">,</span>
+                <span class="n">Prefetch</span><span class="p">(</span>
+                    <span class="s2">"modulos_permissao"</span><span class="p">,</span>
+                    <span class="n">queryset</span><span class="o">=</span><span class="n">permissoes_queryset</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">usuario_id</span><span class="o">=</span><span class="n">usuario_id</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="TokenEnriquecidoService.invalidar">
+<a class="viewcode-back" href="../../../api.html#apps.tokens.services.TokenEnriquecidoService.invalidar">[documentos]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">invalidar</span><span class="p">(</span><span class="n">usuario_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Invalida o Token Enriquecido em cache de um usuário.</span>
+
+<span class="sd">        Remove do cache o Token Enriquecido associado ao usuário,</span>
+<span class="sd">        garantindo que uma nova versão seja gerada na próxima</span>
+<span class="sd">        solicitação.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            usuario_id: Identificador único do usuário.</span>
+<span class="sd">        """</span>
+        <span class="n">CacheService</span><span class="o">.</span><span class="n">invalidar</span><span class="p">(</span>
+            <span class="n">chaves</span><span class="o">.</span><span class="n">token_enriquecido</span><span class="p">(</span><span class="n">usuario_id</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">"Cache do Token Enriquecido invalidado para o usuário </span><span class="si">%s</span><span class="s2">."</span><span class="p">,</span>
+            <span class="n">usuario_id</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Direitos autorais .</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,192 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt-BR" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>apps.tokens.api.serializers &mdash; SME-Identidade-Token-Microsservico</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2346ddef"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/translations.js?v=71a39b36"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../../../../genindex.html" />
+    <link rel="search" title="Buscar" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            SME-Identidade-Token-Microsservico
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar documentos" aria-label="Pesquisar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../arquitetura/visao_geral.html">Visão Geral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../arquitetura/fluxo_token_enriquecido.html">Fluxo do Token JWT Enriquecido</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../controle/index.html">Controle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Referência de código</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SME-Identidade-Token-Microsservico</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Código do módulo</a></li>
+      <li class="breadcrumb-item active">apps.tokens.api.serializers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Código-fonte para apps.tokens.api.serializers</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Serializers utilizados na validação de tokens JWT."""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rest_framework</span><span class="w"> </span><span class="kn">import</span> <span class="n">serializers</span>
+
+
+<div class="viewcode-block" id="ValidarTokenRequestSerializer">
+<a class="viewcode-back" href="../../../../api.html#apps.tokens.api.serializers.ValidarTokenRequestSerializer">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ValidarTokenRequestSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Representa o payload da requisição de validação de um JWT.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        token: Token JWT a ser validado.</span>
+<span class="sd">    """</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="ValidarTokenResponseSerializer">
+<a class="viewcode-back" href="../../../../api.html#apps.tokens.api.serializers.ValidarTokenResponseSerializer">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ValidarTokenResponseSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Representa o resultado da validação de um JWT.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        valido: Indica se o token é válido.</span>
+<span class="sd">        expirado: Indica se o token está expirado.</span>
+<span class="sd">        claims: Claims extraídas do token, quando disponíveis.</span>
+<span class="sd">    """</span>
+
+    <span class="n">valido</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">()</span>
+    <span class="n">expirado</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">()</span>
+    <span class="n">claims</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">DictField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="TokenEnriquecidoRequestSerializer">
+<a class="viewcode-back" href="../../../../api.html#apps.tokens.api.serializers.TokenEnriquecidoRequestSerializer">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TokenEnriquecidoRequestSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Representa os dados utilizados para geração do JWT enriquecido.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        kc_user_id: Identificador do usuário no Keycloak.</span>
+<span class="sd">        username: Usuário/login da conta.</span>
+<span class="sd">        nome: Nome completo do usuário.</span>
+<span class="sd">        email: E-mail do usuário.</span>
+<span class="sd">        ativo: Indica se a conta está ativa.</span>
+<span class="sd">        cpf: CPF do usuário, quando cadastrado no Keycloak.</span>
+<span class="sd">        rf: Registro funcional do usuário, quando cadastrado no Keycloak.</span>
+<span class="sd">        perfil: Identificador do perfil selecionado, quando já houver</span>
+<span class="sd">            um perfil escolhido (ausente no momento do login).</span>
+<span class="sd">        sistema_id: Identificador do sistema, quando informado.</span>
+<span class="sd">    """</span>
+
+    <span class="n">kc_user_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">()</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+    <span class="n">nome</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">EmailField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ativo</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">()</span>
+    <span class="n">cpf</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">rf</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">perfil</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">sistema_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">allow_null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">allow_blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="TokenEnriquecidoResponseSerializer">
+<a class="viewcode-back" href="../../../../api.html#apps.tokens.api.serializers.TokenEnriquecidoResponseSerializer">[documentos]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TokenEnriquecidoResponseSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Representa a resposta da geração do token enriquecido.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        token: JWT enriquecido gerado e assinado pelo Token-MS.</span>
+<span class="sd">        data_expiracao: Data e hora em que o token enriquecido expira.</span>
+<span class="sd">        permissoes: Lista de permissões associadas ao usuário.</span>
+<span class="sd">    """</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">CharField</span><span class="p">()</span>
+    <span class="n">data_expiracao</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
+    <span class="n">permissoes</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">ListField</span><span class="p">(</span>
+        <span class="n">child</span><span class="o">=</span><span class="n">serializers</span><span class="o">.</span><span class="n">DictField</span><span class="p">(),</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Direitos autorais .</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

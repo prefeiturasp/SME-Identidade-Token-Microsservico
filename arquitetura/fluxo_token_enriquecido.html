@@ -1,0 +1,382 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pt-BR" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fluxo do Token JWT Enriquecido &mdash; SME-Identidade-Token-Microsservico</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=2346ddef"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/translations.js?v=71a39b36"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Buscar" href="../search.html" />
+    <link rel="next" title="Controle" href="../controle/index.html" />
+    <link rel="prev" title="Visão Geral" href="visao_geral.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            SME-Identidade-Token-Microsservico
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Pesquisar documentos" aria-label="Pesquisar documentos" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Menu de navegação">
+              <p class="caption" role="heading"><span class="caption-text">Conteúdo</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="visao_geral.html">Visão Geral</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Fluxo do Token JWT Enriquecido</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#objetivo">Objetivo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fluxo-de-emissao">Fluxo de emissão</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#camada-de-cache">Camada de cache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#assinatura-do-token">Assinatura do Token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#publicacao-das-chaves-jwks">Publicação das chaves (JWKS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fluxo-de-validacao">Fluxo de validação</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#claims-do-token">Claims do Token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#endpoints">Endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#resumo-do-fluxo">Resumo do fluxo</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../controle/index.html">Controle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">Referência de código</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Menu de navegação móvel" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SME-Identidade-Token-Microsservico</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Navegação da página">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Fluxo do Token JWT Enriquecido</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/arquitetura/fluxo_token_enriquecido.md.txt" rel="nofollow"> Ver código-fonte da página</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="fluxo-do-token-jwt-enriquecido">
+<h1>Fluxo do Token JWT Enriquecido<a class="headerlink" href="#fluxo-do-token-jwt-enriquecido" title="Link para este cabeçalho"></a></h1>
+<section id="objetivo">
+<h2>Objetivo<a class="headerlink" href="#objetivo" title="Link para este cabeçalho"></a></h2>
+<p>O Token JWT Enriquecido é um JWT próprio da plataforma, emitido pelo <strong>SME-Identidade-Token-Microsservico</strong>.</p>
+<p>Seu objetivo é disponibilizar aos sistemas consumidores uma representação consolidada das informações de autorização do usuário, reunindo atributos provenientes do Keycloak e das projeções mantidas pelo Token-MS.</p>
+<p>Esse token <strong>não substitui</strong> o Access Token emitido pelo Keycloak. O Keycloak continua sendo responsável pela autenticação dos usuários, enquanto o Token-MS é responsável pela composição e emissão do Token JWT Enriquecido.</p>
+<p>Para otimizar esse processo, o Token-MS utiliza uma camada de cache baseada em <strong>KeyDB</strong>, permitindo reutilizar tokens enriquecidos previamente gerados enquanto permanecerem válidos.</p>
+</section>
+<hr class="docutils" />
+<section id="fluxo-de-emissao">
+<h2>Fluxo de emissão<a class="headerlink" href="#fluxo-de-emissao" title="Link para este cabeçalho"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                 Cliente
+
+                    │
+
+                    ▼
+
+              Auth Gateway
+
+                    │
+
+                    ▼
+
+        Keycloak autentica usuário
+
+                    │
+
+                    ▼
+
+              Auth Gateway
+
+                    │
+
+                    ▼
+
+             Token-MS recebe
+
+                    │
+
+                    ▼
+
+     Verifica Token Enriquecido no Cache
+
+          │                      │
+          │                      │
+     Cache HIT              Cache MISS
+          │                      │
+          ▼                      ▼
+ Retorna Token           Consulta projeções
+ armazenado              do usuário
+                                 │
+                                 ▼
+                     Compõe o Token JWT Enriquecido
+                                 │
+                                 ▼
+                      Assina utilizando RS256
+                                 │
+                                 ▼
+                      Armazena no KeyDB
+                                 │
+                                 ▼
+                     Retorna o JWT ao Gateway
+                                 │
+                                 ▼
+                    Gateway responde ao cliente
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="camada-de-cache">
+<h2>Camada de cache<a class="headerlink" href="#camada-de-cache" title="Link para este cabeçalho"></a></h2>
+<p>Antes de compor um novo Token JWT Enriquecido, o Token-MS consulta o KeyDB utilizando uma chave derivada do identificador do usuário.</p>
+<ul class="simple">
+<li><p>Caso exista uma entrada válida no cache (<strong>cache hit</strong>), o token armazenado é retornado imediatamente.</p></li>
+<li><p>Caso não exista uma entrada (<strong>cache miss</strong>), o Token-MS consulta as projeções do usuário, compõe um novo JWT, armazena o resultado no KeyDB e o retorna ao Gateway.</p></li>
+</ul>
+<p>A consistência das informações armazenadas em cache é garantida por duas estratégias complementares:</p>
+<ul class="simple">
+<li><p><strong>Invalidação ativa:</strong> sempre que uma projeção de autorização é atualizada, a respectiva entrada de cache é invalidada, garantindo que as próximas emissões utilizem os dados mais recentes.</p></li>
+<li><p><strong>Expiração automática (TTL):</strong> cada entrada armazenada no KeyDB possui um <strong>Time To Live (TTL)</strong> configurável, permitindo que o cache expire automaticamente após um período determinado, mesmo que nenhuma atualização da projeção ocorra.</p></li>
+</ul>
+<p>Caso o KeyDB esteja indisponível, o Token-MS continua funcionando normalmente, consultando diretamente as projeções persistidas e emitindo o Token JWT Enriquecido sem utilizar o cache. Dessa forma, o cache atua exclusivamente como um mecanismo de otimização de desempenho, sem comprometer a disponibilidade do serviço.</p>
+</section>
+<hr class="docutils" />
+<section id="assinatura-do-token">
+<h2>Assinatura do Token<a class="headerlink" href="#assinatura-do-token" title="Link para este cabeçalho"></a></h2>
+<p>Todos os tokens são assinados utilizando criptografia assimétrica (<strong>RS256</strong>).</p>
+<p>A assinatura utiliza:</p>
+<ul class="simple">
+<li><p>chave privada exclusiva do Token-MS;</p></li>
+<li><p>algoritmo RS256;</p></li>
+<li><p>identificador da chave (<code class="docutils literal notranslate"><span class="pre">kid</span></code>).</p></li>
+</ul>
+<p>Exemplo de Header:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RS256"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"typ"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JWT"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token-v1"</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>O campo <code class="docutils literal notranslate"><span class="pre">kid</span></code> identifica qual chave pública deve ser utilizada durante a validação.</p>
+</section>
+<hr class="docutils" />
+<section id="publicacao-das-chaves-jwks">
+<h2>Publicação das chaves (JWKS)<a class="headerlink" href="#publicacao-das-chaves-jwks" title="Link para este cabeçalho"></a></h2>
+<p>O Token-MS disponibiliza suas chaves públicas através do endpoint:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>GET /.well-known/jwks.json
+</pre></div>
+</div>
+<p>Esse endpoint é público e retorna todas as chaves válidas para verificação da assinatura dos JWTs.</p>
+<p>Exemplo:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"keys"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"kty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RSA"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token-v1"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RS256"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"use"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sig"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"n"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"e"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AQAB"</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>O endpoint suporta múltiplas chaves simultaneamente, permitindo futuras rotações de chave sem interromper a validação dos tokens emitidos.</p>
+</section>
+<hr class="docutils" />
+<section id="fluxo-de-validacao">
+<h2>Fluxo de validação<a class="headerlink" href="#fluxo-de-validacao" title="Link para este cabeçalho"></a></h2>
+<p>Os sistemas consumidores devem validar os tokens seguindo o fluxo abaixo.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Receber JWT
+
+      │
+
+      ▼
+
+Ler o Header
+
+      │
+
+      ▼
+
+Obter o campo "kid"
+
+      │
+
+      ▼
+
+Consultar o endpoint JWKS
+
+      │
+
+      ▼
+
+Selecionar a chave pública
+
+      │
+
+      ▼
+
+Validar assinatura RS256
+
+      │
+
+      ▼
+
+Validar expiração
+
+      │
+
+      ▼
+
+Consumir as claims
+</pre></div>
+</div>
+<p>A chave privada permanece exclusivamente no Token-MS e nunca deve ser compartilhada com sistemas consumidores.</p>
+</section>
+<hr class="docutils" />
+<section id="claims-do-token">
+<h2>Claims do Token<a class="headerlink" href="#claims-do-token" title="Link para este cabeçalho"></a></h2>
+<p>O Token JWT Enriquecido reúne informações provenientes do Keycloak e das projeções mantidas pelo Token-MS.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Claim</p></th>
+<th class="head"><p>Origem</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sub</span></code>, <code class="docutils literal notranslate"><span class="pre">preferred_username</span></code>, <code class="docutils literal notranslate"><span class="pre">email</span></code></p></td>
+<td><p>Keycloak</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rf</span></code>, <code class="docutils literal notranslate"><span class="pre">cpf</span></code></p></td>
+<td><p>Keycloak (sobrescritos pela projeção do Token-MS, quando disponível)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nome</span></code>, <code class="docutils literal notranslate"><span class="pre">situacao</span></code>, <code class="docutils literal notranslate"><span class="pre">dre_codigo</span></code>, <code class="docutils literal notranslate"><span class="pre">contrato_externo</span></code></p></td>
+<td><p>Token-MS</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">perfis</span></code>, <code class="docutils literal notranslate"><span class="pre">permissoes</span></code></p></td>
+<td><p>Token-MS</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vinculos</span></code></p></td>
+<td><p>Token-MS — vínculos funcionais vigentes do servidor (cargo base, cargo sobreposto, função/atividade), publicados pelo ETL</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">perfilSelecionado</span></code></p></td>
+<td><p>Informado quando um perfil é selecionado durante a emissão do token</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">iss</span></code></p></td>
+<td><p>Emissor do token</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">iat</span></code>, <code class="docutils literal notranslate"><span class="pre">exp</span></code></p></td>
+<td><p>Emissão e expiração</p></td>
+</tr>
+</tbody>
+</table>
+<p>Caso não exista projeção para o usuário, os atributos provenientes do Token-MS poderão estar ausentes ou conter listas vazias. A claim <code class="docutils literal notranslate"><span class="pre">vinculos</span></code> também vem como lista vazia quando o usuário não tem atributo complementar sincronizado (ex.: aluno, terceiro, ou servidor cuja identidade ainda não passou pelo push-batch do ETL).</p>
+</section>
+<hr class="docutils" />
+<section id="endpoints">
+<h2>Endpoints<a class="headerlink" href="#endpoints" title="Link para este cabeçalho"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Método</p></th>
+<th class="head"><p>Endpoint</p></th>
+<th class="head"><p>Descrição</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/identidade-token/api/v1/token/enriquecido/{usuario_id}</span></code></p></td>
+<td><p>Retorna um Token JWT Enriquecido, reutilizando o cache quando disponível ou gerando um novo token quando necessário.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">POST</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/identidade-token/api/v1/token/validar/</span></code></p></td>
+<td><p>Valida a assinatura, integridade e expiração do token.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">GET</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/identidade-token/.well-known/jwks.json</span></code></p></td>
+<td><p>Publica o conjunto de chaves públicas (JWKS).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="resumo-do-fluxo">
+<h2>Resumo do fluxo<a class="headerlink" href="#resumo-do-fluxo" title="Link para este cabeçalho"></a></h2>
+<ol class="arabic simple">
+<li><p>O usuário é autenticado pelo Keycloak.</p></li>
+<li><p>O Gateway solicita ao Token-MS a emissão do Token JWT Enriquecido.</p></li>
+<li><p>O Token-MS consulta o KeyDB em busca de um token previamente gerado.</p></li>
+<li><p>Em caso de <strong>cache hit</strong>, o token armazenado é retornado imediatamente.</p></li>
+<li><p>Em caso de <strong>cache miss</strong>, o Token-MS consulta as projeções do usuário, compõe um novo JWT, assina utilizando RS256, armazena o resultado no KeyDB e o retorna ao Gateway.</p></li>
+<li><p>O Gateway devolve o token ao cliente.</p></li>
+<li><p>A entrada de cache é removida quando a projeção do usuário é atualizada ou automaticamente após a expiração do <strong>TTL</strong> configurado.</p></li>
+<li><p>Os sistemas consumidores validam o JWT utilizando o endpoint JWKS antes de consumir suas claims.</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Rodapé">
+        <a href="visao_geral.html" class="btn btn-neutral float-left" title="Visão Geral" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Anterior</a>
+        <a href="../controle/index.html" class="btn btn-neutral float-right" title="Controle" accesskey="n" rel="next">Próximo <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Direitos autorais .</p>
+  </div>
+
+  Compilado com <a href="https://www.sphinx-doc.org/">Sphinx</a> usando um
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">tema</a>
+    fornecido por <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
