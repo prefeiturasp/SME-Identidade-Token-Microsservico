@@ -144,6 +144,18 @@ CACHES = {
         "LOCATION": os.getenv("URL_KEYDB", "redis://keydb:6379/0"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "SOCKET_CONNECT_TIMEOUT": float(
+                os.getenv(
+                    "KEYDB_SOCKET_CONNECT_TIMEOUT",
+                    "0.5",
+                )
+            ),
+            "SOCKET_TIMEOUT": float(
+                os.getenv(
+                    "KEYDB_SOCKET_TIMEOUT",
+                    "1.0",
+                )
+            ),
         },
         "TIMEOUT": int(os.getenv("KEYDB_DEFAULT_TIMEOUT", "300")),
     }

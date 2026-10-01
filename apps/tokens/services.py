@@ -30,6 +30,9 @@ class TokenEnriquecidoService:
         Caso contrário, a projeção do usuário é consultada, um novo
         token é gerado e armazenado em cache.
 
+        O cache é individualizado pela combinação de usuário, perfil e
+        sistema.
+
         Args:
             usuario_id: Identificador único do usuário.
             conta_keycloak: Dados da conta autenticada no Keycloak.
@@ -41,7 +44,11 @@ class TokenEnriquecidoService:
             Dados do Token Enriquecido contendo o JWT, a data de
             expiração e as permissões do usuário.
         """
-        chave = chaves.token_enriquecido(usuario_id)
+        chave = chaves.token_enriquecido(
+            usuario_id=usuario_id,
+            perfil=perfil,
+            sistema_id=sistema_id,
+        )
 
         resposta = cast(
             dict[str, Any] | None,
@@ -50,18 +57,28 @@ class TokenEnriquecidoService:
 
         if resposta is not None:
             logger.info(
-                "Cache hit para o Token Enriquecido do usuário %s.",
+                (
+                    "Cache hit para o Token Enriquecido do usuário %s "
+                    "(perfil=%s, sistema_id=%s)."
+                ),
                 usuario_id,
+                perfil,
+                sistema_id,
             )
             return resposta
 
         logger.info(
-            "Cache miss para o Token Enriquecido do usuário %s.",
+            (
+                "Cache miss para o Token Enriquecido do usuário %s "
+                "(perfil=%s, sistema_id=%s)."
+            ),
             usuario_id,
+            perfil,
+            sistema_id,
         )
 
         projecao_usuario = TokenEnriquecidoService._obter_projecao_usuario(
-            usuario_id,
+            usuario_id=usuario_id,
             sistema_id=sistema_id,
         )
 
@@ -72,8 +89,13 @@ class TokenEnriquecidoService:
         )
 
         logger.info(
-            "Token Enriquecido gerado para o usuário %s.",
+            (
+                "Token Enriquecido gerado para o usuário %s "
+                "(perfil=%s, sistema_id=%s)."
+            ),
             usuario_id,
+            perfil,
+            sistema_id,
         )
 
         resposta = {
@@ -88,8 +110,13 @@ class TokenEnriquecidoService:
         )
 
         logger.info(
-            "Token Enriquecido armazenado em cache para o usuário %s.",
+            (
+                "Token Enriquecido armazenado em cache para o usuário %s "
+                "(perfil=%s, sistema_id=%s)."
+            ),
             usuario_id,
+            perfil,
+            sistema_id,
         )
 
         return resposta
@@ -137,20 +164,54 @@ class TokenEnriquecidoService:
 
     @staticmethod
     def invalidar(usuario_id: UUID) -> None:
-        """Invalida o Token Enriquecido em cache de um usuário.
+        """Invalida todos os Tokens Enriquecidos em cache de um usuário.
 
-        Remove do cache o Token Enriquecido associado ao usuário,
-        garantindo que uma nova versão seja gerada na próxima
-        solicitação.
+        Remove todas as variações de Token Enriquecido associadas ao
+        usuário, independentemente do perfil ou sistema utilizado.
 
         Args:
             usuario_id: Identificador único do usuário.
         """
-        CacheService.invalidar(
-            chaves.token_enriquecido(usuario_id),
+        CacheService.invalidar_padrao(
+            chaves.tokens_enriquecidos_usuario(usuario_id),
         )
 
         logger.info(
-            "Cache do Token Enriquecido invalidado para o usuário %s.",
+            "Caches do Token Enriquecido invalidados para o usuário %s.",
             usuario_id,
+        )
+
+    @staticmethod
+    def invalidar_contexto(
+        usuario_id: UUID,
+        perfil: str | None = None,
+        sistema_id: str | None = None,
+    ) -> None:
+        """Invalida um Token Enriquecido específico em cache.
+
+        Esse método permite invalidar uma única combinação de usuário,
+        perfil e sistema. Atualmente, a invalidação principal é realizada
+        pelo método ``invalidar``, que remove todos os caches do usuário.
+
+        Args:
+            usuario_id: Identificador único do usuário.
+            perfil: Identificador do perfil selecionado.
+            sistema_id: Identificador do sistema selecionado.
+        """
+        chave = chaves.token_enriquecido(
+            usuario_id=usuario_id,
+            perfil=perfil,
+            sistema_id=sistema_id,
+        )
+
+        CacheService.invalidar(chave)
+
+        logger.info(
+            (
+                "Cache do Token Enriquecido invalidado para o usuário %s "
+                "(perfil=%s, sistema_id=%s)."
+            ),
+            usuario_id,
+            perfil,
+            sistema_id,
         )
