@@ -21,11 +21,12 @@ def _identificador_natural(dados: dict[str, Any]) -> dict[str, Any]:
     matrícula) para decidir qual campo identifica o registro e evitar
     duplicação em reenvios.
     """
-    if dados.get("rf"):
-        return {"rf": dados["rf"]}
-    if dados.get("cpf"):
-        return {"cpf": dados["cpf"]}
-    return {"matricula": dados["matricula"]}
+
+    return {
+        "rf": dados.get("rf", None),
+        "cpf": dados.get("cpf", None),
+        "matricula": dados.get("matricula", None),
+    }
 
 
 def _localizar_projecao(dados: dict[str, Any]) -> ProjecaoUsuario | None:
