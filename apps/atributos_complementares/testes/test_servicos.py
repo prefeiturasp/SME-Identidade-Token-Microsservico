@@ -20,7 +20,7 @@ from apps.perfil.models import ProjecaoUsuario
 class TestIdentificadorNatural(TestCase):
     """Testes da definição da chave natural do atributo complementar."""
 
-    def test_deve_priorizar_rf(self) -> None:
+    def test_deve_priorizar_identificador_composto(self) -> None:
         """Deve usar RF quando estiver disponível."""
         dados = {
             "rf": "1234567",
@@ -30,9 +30,13 @@ class TestIdentificadorNatural(TestCase):
 
         assert _identificador_natural(dados) == {
             "rf": "1234567",
+            "cpf": "12345678900",
+            "matricula": "MAT123",
         }
 
-    def test_deve_usar_cpf_quando_rf_nao_existir(self) -> None:
+    def test_deve_usar_identificador_composto_mesmo_quando_rf_nao_existir(
+        self,
+    ) -> None:
         """Deve usar CPF quando RF não estiver disponível."""
         dados = {
             "rf": None,
@@ -41,10 +45,14 @@ class TestIdentificadorNatural(TestCase):
         }
 
         assert _identificador_natural(dados) == {
+            "rf": None,
             "cpf": "12345678900",
+            "matricula": "MAT123",
         }
 
-    def test_deve_usar_matricula_quando_rf_e_cpf_nao_existirem(self) -> None:
+    def test_deve_usar_identificador_composto_mesmo_quando_rf_e_cpf_nao_existirem(
+        self,
+    ) -> None:
         """Deve usar matrícula quando RF e CPF não estiverem disponíveis."""
         dados = {
             "rf": None,
@@ -53,6 +61,8 @@ class TestIdentificadorNatural(TestCase):
         }
 
         assert _identificador_natural(dados) == {
+            "rf": None,
+            "cpf": None,
             "matricula": "MAT123",
         }
 
