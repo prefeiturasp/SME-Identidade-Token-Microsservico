@@ -1,5 +1,8 @@
-"""Views da API da aplicação atributos_complementares."""
+"""Entrada dos lotes publicados pelo ETL."""
 
+from typing import Any
+
+from django.db import transaction
 from drf_spectacular.utils import (
     OpenApiResponse,
     extend_schema,
@@ -13,20 +16,22 @@ from apps.atributos_complementares.api.serializers import (
     PushBatchSerializer,
 )
 from apps.atributos_complementares.servicos import sincronizar_lote
+from apps.recuperacao_senha.carga_etl import sincronizar_sistemas
 
 _TAG = ["ETL"]
 
 
 class PushBatchAtributosView(APIView):
-    """Recebe lotes de atributos complementares publicados pelo ETL."""
+    """Recebe os atributos de usuários e as seções opcionais do lote ETL."""
 
     @extend_schema(
         tags=_TAG,
-        summary="Publicar lote de atributos complementares",
+        summary="Publicar lote do ETL",
         description=(
             "Cria ou atualiza, em lote, os atributos complementares "
-            "(cargo, lotação, DRE/UE, vínculos) de usuários "
-            "publicados pelo pipeline do etl-ms."
+            "(cargo, lotação, DRE/UE, vínculos) de usuários e, quando "
+            "informados, os sistemas de recuperação de senha. Todas as "
+            "seções são validadas antes da gravação."
         ),
         request=PushBatchSerializer,
         responses={
@@ -39,7 +44,7 @@ class PushBatchAtributosView(APIView):
         },
     )
     def post(self, request: Request) -> Response:
-        """Sincroniza o lote de atributos complementares recebido.
+        """Valida e sincroniza as seções do lote na mesma transação.
 
         Args:
             request: Requisição HTTP recebida.
@@ -50,9 +55,14 @@ class PushBatchAtributosView(APIView):
         serializer = PushBatchSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        resultado = sincronizar_lote(
-            serializer.validated_data["usuarios"],
-            id_execucao=serializer.validated_data.get("id_execucao"),
-        )
+        with transaction.atomic():
+            resultado: dict[str, Any] = sincronizar_lote(
+                serializer.validated_data["usuarios"],
+                id_execucao=serializer.validated_data.get("id_execucao"),
+            )
+            if "sistemas_recuperacao_senha" in serializer.validated_data:
+                resultado["sistemas_recuperacao_senha"] = sincronizar_sistemas(
+                    serializer.validated_data["sistemas_recuperacao_senha"]
+                )
 
         return Response(resultado, status=status.HTTP_200_OK)
