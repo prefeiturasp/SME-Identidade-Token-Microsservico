@@ -13,5 +13,6 @@ Além da emissão de tokens enriquecidos, o serviço gerencia a persistência de
 arquitetura/visao_geral
 arquitetura/fluxo_token_enriquecido
 controle/index
+recuperacao-senha
 api
 ```

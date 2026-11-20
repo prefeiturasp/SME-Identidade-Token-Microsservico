@@ -38,6 +38,26 @@ Perfil
 .. automodule:: apps.perfil.api.urls
    :members:
 
+Recuperação de senha
+--------------------
+
+.. autoclass:: apps.recuperacao_senha.contratos.UsuarioIdentidade
+
+.. automodule:: apps.recuperacao_senha.models
+   :members:
+
+.. automodule:: apps.recuperacao_senha.servicos
+   :members:
+
+.. automodule:: apps.recuperacao_senha.api.views
+   :members:
+
+.. automodule:: apps.recuperacao_senha.carga_etl
+   :members:
+
+.. automodule:: apps.recuperacao_senha.serializers_etl
+   :members:
+
 Cache
 --------
 
