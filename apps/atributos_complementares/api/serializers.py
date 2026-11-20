@@ -4,6 +4,8 @@ from typing import Any
 
 from rest_framework import serializers
 
+from apps.recuperacao_senha.api.serializers import SistemaRecuperacaoSerializer
+
 
 class VinculoEntradaSerializer(serializers.Serializer):
     """Representa um vínculo funcional de servidor do lote.
@@ -112,7 +114,10 @@ class AtributoComplementarUsuarioEntradaSerializer(serializers.Serializer):
 
 
 class PushBatchSerializer(serializers.Serializer):
-    """Representa o lote de atributos complementares enviado pelo ETL."""
+    """Representa o lote do ETL com seções independentes por tipo de dado."""
 
     id_execucao = serializers.UUIDField(required=False, allow_null=True)
     usuarios = AtributoComplementarUsuarioEntradaSerializer(many=True)
+    sistemas_recuperacao_senha = SistemaRecuperacaoSerializer(
+        many=True, required=False
+    )

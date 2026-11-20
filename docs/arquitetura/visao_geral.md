@@ -14,6 +14,11 @@ Além disso, o serviço utiliza uma camada de cache baseada em **KeyDB** para ot
 
 O Keycloak permanece como a autoridade responsável pela identidade, autenticação e protocolos de segurança da plataforma.
 
+O Gateway concentra as consultas ao provedor e fornece a conta ao MS-Token.
+O MS-Token não mantém conexão, SDK ou credenciais do Keycloak. Na recuperação
+de senha, controla os códigos e as reservas, envia o e-mail e recebe do
+Gateway o resultado da alteração da credencial.
+
 O SME-Identidade-Token-Microsservico complementa esse processo, sendo responsável por:
 
 * manter projeções de autorização;
@@ -37,7 +42,7 @@ Dessa forma, o serviço separa claramente as responsabilidades entre autenticaç
                    | Identidade     |
                    +-------+--------+
                            |
-                           | Identidade base
+                           | Identidade base via Gateway
                            |
                            ▼
                  +-------------------------+
