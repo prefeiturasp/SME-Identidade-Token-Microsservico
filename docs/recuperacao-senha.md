@@ -15,7 +15,7 @@ endereço ou credenciais administrativas.
 ## Integração com o Gateway
 
 A conta é representada por `UsuarioIdentidade`, definido em
-`apps.recuperacao_senha.contratos`, com identificador, login, nome,
+`apps.recuperacao_senha.dtos`, com identificador, login, nome,
 e-mail, situação, RF e CPF. O contexto identifica o conjunto de contas
 informado pelo Gateway.
 

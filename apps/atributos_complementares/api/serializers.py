@@ -4,7 +4,7 @@ from typing import Any
 
 from rest_framework import serializers
 
-from apps.recuperacao_senha.serializers_etl import SistemaRecuperacaoSerializer
+from apps.recuperacao_senha.api.serializers import SistemaRecuperacaoSerializer
 
 
 class VinculoEntradaSerializer(serializers.Serializer):

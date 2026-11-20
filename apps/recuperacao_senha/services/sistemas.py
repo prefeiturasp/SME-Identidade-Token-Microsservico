@@ -1,4 +1,4 @@
-"""Persistência dos sistemas de recuperação publicados no lote do ETL."""
+"""Serviços de sincronização dos sistemas de recuperação de senha."""
 
 from typing import Any
 

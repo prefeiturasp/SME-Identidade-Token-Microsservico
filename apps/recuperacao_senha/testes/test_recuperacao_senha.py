@@ -19,13 +19,13 @@ from django.test import override_settings
 from django.utils import timezone
 from rest_framework.test import APIClient
 
-from apps.recuperacao_senha import servicos
-from apps.recuperacao_senha.contratos import UsuarioIdentidade
+from apps.recuperacao_senha.dtos import UsuarioIdentidade
 from apps.recuperacao_senha.models import (
     OperacaoAlteracaoSenha,
     RecuperacaoSenha,
     SistemaRecuperacaoSenha,
 )
+from apps.recuperacao_senha.services import recuperacao_senha
 
 BASE = "/identidade-token/api/v1/recuperacao-senha/"
 CONTA = UsuarioIdentidade(
@@ -154,7 +154,7 @@ def test_fluxo_completo_e_confirmacao_idempotente(
     assert solicitar(cliente).json() == CONTA.email
     token = token_email()
     registro = RecuperacaoSenha.objects.get()
-    assert registro.token_hash == servicos.hash_token(token) != token
+    assert registro.token_hash == recuperacao_senha.hash_token(token) != token
     assert registro.expira_em is not None
     assert timezone.now() + timedelta(hours=5, minutes=59) < registro.expira_em
     assert registro.expira_em <= timezone.now() + timedelta(hours=6)
@@ -221,7 +221,7 @@ def test_expiracao_e_isolamento_de_contexto(
     assert validar(cliente, token, "outro-contexto").json() is False
     RecuperacaoSenha.objects.update(expira_em=timezone.now())
     assert validar(cliente, token).json() is False
-    assert reservar(cliente, token).json() == servicos.TOKEN_INVALIDO
+    assert reservar(cliente, token).json() == recuperacao_senha.TOKEN_INVALIDO
 
 
 @pytest.mark.django_db
@@ -291,7 +291,7 @@ def test_email_invalido(
     """Endereços inválidos não produzem solicitação."""
     assert (
         solicitar(cliente, replace(CONTA, email=email)).json()
-        == servicos.SEM_EMAIL
+        == recuperacao_senha.SEM_EMAIL
     )
     assert not RecuperacaoSenha.objects.exists()
 
@@ -314,7 +314,7 @@ def test_falha_de_email_preserva_link_anterior(
     solicitar(cliente)
     anterior = token_email()
     with patch.object(
-        servicos, "send_mail", side_effect=SMTPException("falha")
+        recuperacao_senha, "send_mail", side_effect=SMTPException("falha")
     ):
         assert solicitar(cliente).status_code == 502
     assert validar(cliente, anterior).json() is True
@@ -431,10 +431,10 @@ def test_reservas_concorrentes_tem_um_vencedor(
         try:
             barreira.wait(timeout=10)
             try:
-                return servicos.reservar_alteracao(
+                return recuperacao_senha.reservar_alteracao(
                     token, CONTEXTO, "NovaSenha123", CONTA, uuid.uuid4()
                 )["usuario_id"]
-            except servicos.RecuperacaoSenhaError as erro:
+            except recuperacao_senha.RecuperacaoSenhaError as erro:
                 return erro.status
         finally:
             close_old_connections()

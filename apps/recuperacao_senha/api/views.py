@@ -3,78 +3,18 @@
 from smtplib import SMTPException
 
 from drf_spectacular.utils import OpenApiTypes, extend_schema
-from rest_framework import serializers
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.recuperacao_senha import servicos
-from apps.recuperacao_senha.contratos import UsuarioIdentidade
-
-
-class ContextoSerializer(serializers.Serializer):
-    """Contexto de identidade informado pelo Gateway autenticado."""
-
-    contexto = serializers.CharField(max_length=255, trim_whitespace=False)
-
-
-class ContaSerializer(serializers.Serializer):
-    """Dados normalizados consultados pelo Gateway."""
-
-    id = serializers.CharField(max_length=255)
-    login = serializers.CharField(max_length=255, trim_whitespace=False)
-    nome = serializers.CharField(allow_blank=True)
-    email = serializers.CharField(allow_null=True, allow_blank=True)
-    ativo = serializers.BooleanField()
-    rf = serializers.CharField(
-        required=False, allow_null=True, allow_blank=True
-    )
-    cpf = serializers.CharField(
-        required=False, allow_null=True, allow_blank=True
-    )
-
-
-class SolicitacaoSerializer(ContextoSerializer):
-    """Solicitação com a conta obtida pelo Gateway."""
-
-    login = serializers.CharField(trim_whitespace=False)
-    sistema = serializers.IntegerField()
-    conta = ContaSerializer(allow_null=True)
-
-
-class TokenSerializer(ContextoSerializer):
-    """Token e contexto consultados sem comunicação com o provedor."""
-
-    token = serializers.CharField(trim_whitespace=False)
-
-
-class ReservaSerializer(TokenSerializer):
-    """Dados da reserva e conta atual vinculada ao token."""
-
-    senha = serializers.CharField(trim_whitespace=False, write_only=True)
-    conta = ContaSerializer()
-    operacao_id = serializers.UUIDField()
-
-
-class ConclusaoSerializer(ContextoSerializer):
-    """Resultado normalizado informado pelo Gateway."""
-
-    operacao_id = serializers.UUIDField()
-    resultado = serializers.ChoiceField(
-        choices=["sucesso", "rejeitada", "incerta"]
-    )
-    motivo = serializers.ChoiceField(
-        choices=[
-            "",
-            "historico",
-            "padrao",
-            "politica",
-            "indisponivel",
-            "conta",
-        ],
-        default="",
-        required=False,
-    )
+from apps.recuperacao_senha.api.serializers import (
+    ConclusaoSerializer,
+    ReservaSerializer,
+    SolicitacaoSerializer,
+    TokenSerializer,
+)
+from apps.recuperacao_senha.dtos import UsuarioIdentidade
+from apps.recuperacao_senha.services import recuperacao_senha
 
 
 class RecuperacaoBaseView(APIView):
@@ -82,7 +22,7 @@ class RecuperacaoBaseView(APIView):
 
     def handle_exception(self, exc: Exception) -> Response:
         """Traduz erros de recuperação sem depender de um provedor."""
-        if isinstance(exc, servicos.RecuperacaoSenhaError):
+        if isinstance(exc, recuperacao_senha.RecuperacaoSenhaError):
             return Response(str(exc), status=exc.status)
         if isinstance(exc, (SMTPException, OSError)):
             return Response(
@@ -106,7 +46,7 @@ class SolicitarView(RecuperacaoBaseView):
         dados = entrada.validated_data
         conta = UsuarioIdentidade(**dados["conta"]) if dados["conta"] else None
         return Response(
-            servicos.solicitar(
+            recuperacao_senha.solicitar(
                 dados["login"], dados["sistema"], dados["contexto"], conta
             )
         )
@@ -125,9 +65,11 @@ class ValidarView(RecuperacaoBaseView):
         entrada = TokenSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
         dados = entrada.validated_data
-        if not servicos.hash_token(dados["token"]):
+        if not recuperacao_senha.hash_token(dados["token"]):
             return Response("O token informado é inválido", status=400)
-        return Response(servicos.validar(dados["token"], dados["contexto"]))
+        return Response(
+            recuperacao_senha.validar(dados["token"], dados["contexto"])
+        )
 
 
 class ConsultarAlteracaoView(RecuperacaoBaseView):
@@ -142,7 +84,9 @@ class ConsultarAlteracaoView(RecuperacaoBaseView):
         """Retorna a identidade que o Gateway deve consultar."""
         entrada = TokenSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
-        return Response(servicos.consultar_alteracao(**entrada.validated_data))
+        return Response(
+            recuperacao_senha.consultar_alteracao(**entrada.validated_data)
+        )
 
 
 class ReservarAlteracaoView(RecuperacaoBaseView):
@@ -159,7 +103,7 @@ class ReservarAlteracaoView(RecuperacaoBaseView):
         entrada.is_valid(raise_exception=True)
         dados = dict(entrada.validated_data)
         dados["conta"] = UsuarioIdentidade(**dados["conta"])
-        return Response(servicos.reservar_alteracao(**dados))
+        return Response(recuperacao_senha.reservar_alteracao(**dados))
 
 
 class ConcluirAlteracaoView(RecuperacaoBaseView):
@@ -174,4 +118,6 @@ class ConcluirAlteracaoView(RecuperacaoBaseView):
         """Finaliza a reserva de forma idempotente."""
         entrada = ConclusaoSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
-        return Response(servicos.concluir_alteracao(**entrada.validated_data))
+        return Response(
+            recuperacao_senha.concluir_alteracao(**entrada.validated_data)
+        )

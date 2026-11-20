@@ -13,7 +13,7 @@ from django.db import transaction
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from apps.recuperacao_senha.contratos import UsuarioIdentidade
+from apps.recuperacao_senha.dtos import UsuarioIdentidade
 from apps.recuperacao_senha.models import (
     OperacaoAlteracaoSenha,
     RecuperacaoSenha,

@@ -16,7 +16,7 @@ from apps.atributos_complementares.api.serializers import (
     PushBatchSerializer,
 )
 from apps.atributos_complementares.servicos import sincronizar_lote
-from apps.recuperacao_senha.carga_etl import sincronizar_sistemas
+from apps.recuperacao_senha.services.sistemas import sincronizar_sistemas
 
 _TAG = ["ETL"]
 

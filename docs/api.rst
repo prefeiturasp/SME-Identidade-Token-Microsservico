@@ -41,21 +41,21 @@ Perfil
 Recuperação de senha
 --------------------
 
-.. autoclass:: apps.recuperacao_senha.contratos.UsuarioIdentidade
+.. autoclass:: apps.recuperacao_senha.dtos.UsuarioIdentidade
 
 .. automodule:: apps.recuperacao_senha.models
    :members:
 
-.. automodule:: apps.recuperacao_senha.servicos
+.. automodule:: apps.recuperacao_senha.services.recuperacao_senha
    :members:
 
 .. automodule:: apps.recuperacao_senha.api.views
    :members:
 
-.. automodule:: apps.recuperacao_senha.carga_etl
+.. automodule:: apps.recuperacao_senha.services.sistemas
    :members:
 
-.. automodule:: apps.recuperacao_senha.serializers_etl
+.. automodule:: apps.recuperacao_senha.api.serializers
    :members:
 
 Cache

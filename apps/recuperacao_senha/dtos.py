@@ -1,4 +1,4 @@
-"""Dados normalizados fornecidos pelo Gateway ao fluxo de recuperação."""
+"""Objetos de transferência de dados do fluxo de recuperação de senha."""
 
 from dataclasses import dataclass
 
