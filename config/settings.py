@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "apps.atributos_complementares",
     "apps.tokens",
     "apps.cache",
+    "apps.recuperacao_senha",
 ]
 
 MIDDLEWARE = [
