@@ -2,14 +2,11 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
-      rel="stylesheet"
-    />
+    <title>Recuperação de senha</title>
     <style>
       body {
         background: #fafafa;
-        font-family: 'Roboto', sans-serif;
+        font-family: Arial, Helvetica, sans-serif;
       }
       .main {
         margin: 0 auto;
@@ -48,7 +45,7 @@
         font-weight: bold;
       }
       .botao {
-        background: #6495ED;
+        background: #086397;
         border: 0 none;
         border-radius: 3px;
         color: #ffffff;
@@ -75,7 +72,7 @@
         </p>
         <p>O seu login de acesso continua o mesmo: <strong>{{ login }}</strong></p>
         <p>Clique no botão abaixo e defina uma nova senha:</p>
-        <p><a role="button" class="botao" href="{{ link }}">Redefinir senha</a></p>
+        <p><a class="botao" href="{{ link }}">Redefinir senha</a></p>
         <p>Ou, utilize o link: <a href="{{ link }}">{{ link }}</a></p>
       </div>
     </div>
