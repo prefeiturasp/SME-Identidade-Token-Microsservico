@@ -322,24 +322,48 @@ def test_falha_de_email_preserva_link_anterior(
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    ("motivo", "http"),
+    ("motivo", "http", "mensagem"),
     [
-        ("historico", 401),
-        ("padrao", 401),
-        ("politica", 502),
-        ("indisponivel", 502),
-        ("conta", 401),
+        (
+            "historico",
+            401,
+            "A nova senha não pode ser uma das ultimas 5 anteriores",
+        ),
+        ("padrao", 401, recuperacao_senha.SENHA_INVALIDA),
+        (
+            "politica",
+            502,
+            "O histórico de senhas não está configurado no provedor.",
+        ),
+        (
+            "indisponivel",
+            502,
+            "Não foi possível concluir a recuperação de senha.",
+        ),
+        ("conta", 401, recuperacao_senha.USUARIO_INVALIDO),
     ],
 )
 def test_rejeicao_confirmada_libera_nova_tentativa(
-    cliente: APIClient, sistemas: None, motivo: str, http: int
+    cliente: APIClient,
+    sistemas: None,
+    motivo: str,
+    http: int,
+    mensagem: str,
 ) -> None:
     """Somente confirmação de senha não aplicada restaura o uso do UUID."""
     solicitar(cliente)
     token = token_email()
     op = reservar(cliente, token).json()["operacao_id"]
+    resposta = concluir(cliente, op, "rejeitada", motivo)
+    assert resposta.status_code == http
+    assert resposta.json() == mensagem
+    operacao = OperacaoAlteracaoSenha.objects.get(pk=op)
+    assert operacao.estado == OperacaoAlteracaoSenha.Estado.REJEITADA
+    assert operacao.motivo == motivo
+    assert RecuperacaoSenha.objects.get().operacao_id is None
     assert concluir(cliente, op, "rejeitada", motivo).status_code == http
-    assert concluir(cliente, op, "rejeitada", motivo).status_code == http
+    outro_motivo = "historico" if motivo == "conta" else "conta"
+    assert concluir(cliente, op, "rejeitada", outro_motivo).status_code == 409
     assert validar(cliente, token).json() is True
     assert reservar(cliente, token).status_code == 200
 

@@ -242,6 +242,77 @@ def reservar_alteracao(
     return _dados_operacao(operacao)
 
 
+def _registrar_resultado(
+    operacao: OperacaoAlteracaoSenha, resultado: str, motivo: str
+) -> None:
+    """Registra o resultado com a operação bloqueada pela transação chamadora.
+
+    Args:
+        operacao: Reserva obtida com bloqueio de linha.
+        resultado: Estado final informado pelo Gateway.
+        motivo: Motivo normalizado de uma rejeição.
+
+    Raises:
+        RecuperacaoSenhaError: Se a confirmação conflitar com a anterior.
+    """
+    estados = OperacaoAlteracaoSenha.Estado
+    if operacao.estado != estados.RESERVADA:
+        if operacao.estado != resultado or operacao.motivo != motivo:
+            raise RecuperacaoSenhaError("Operação já finalizada.", 409)
+        return
+    operacao.estado = resultado
+    operacao.motivo = motivo
+    operacao.save(update_fields=["estado", "motivo"])
+    campos: dict[str, Any] = {}
+    if resultado == estados.SUCESSO:
+        campos = {
+            "token_hash": None,
+            "expira_em": None,
+            "operacao_id": None,
+        }
+    elif resultado == estados.REJEITADA:
+        campos = {"operacao_id": None}
+    if campos:
+        RecuperacaoSenha.objects.filter(
+            pk=operacao.recuperacao_id,
+            token_hash=operacao.token_hash,
+            operacao_id=operacao.id,
+        ).update(**campos)
+
+
+def _resultado_alteracao(operacao: OperacaoAlteracaoSenha) -> str:
+    """Retorna o login ou o erro correspondente ao resultado persistido.
+
+    Args:
+        operacao: Operação cuja transação já foi concluída.
+
+    Returns:
+        Login associado à alteração bem-sucedida.
+
+    Raises:
+        RecuperacaoSenhaError: Se a alteração foi rejeitada ou ficou incerta.
+    """
+    estados = OperacaoAlteracaoSenha.Estado
+    if operacao.estado == estados.SUCESSO:
+        return str(operacao.login)
+    if operacao.estado == estados.REJEITADA:
+        if operacao.motivo == "conta":
+            raise RecuperacaoSenhaError(USUARIO_INVALIDO, 401)
+        if operacao.motivo == "historico":
+            raise RecuperacaoSenhaError(
+                "A nova senha não pode ser uma das ultimas 5 anteriores", 401
+            )
+        if operacao.motivo == "padrao":
+            raise RecuperacaoSenhaError(SENHA_INVALIDA, 401)
+        if operacao.motivo == "politica":
+            raise RecuperacaoSenhaError(
+                "O histórico de senhas não está configurado no provedor.", 502
+            )
+    raise RecuperacaoSenhaError(
+        "Não foi possível concluir a recuperação de senha.", 502
+    )
+
+
 def concluir_alteracao(
     contexto: str, operacao_id: UUID, resultado: str, motivo: str = ""
 ) -> str:
@@ -270,44 +341,6 @@ def concluir_alteracao(
         )
         if operacao is None:
             raise RecuperacaoSenhaError("Operação não encontrada.", 409)
-        if operacao.estado != estados.RESERVADA:
-            if operacao.estado != resultado or operacao.motivo != motivo:
-                raise RecuperacaoSenhaError("Operação já finalizada.", 409)
-        else:
-            operacao.estado = resultado
-            operacao.motivo = motivo
-            operacao.save(update_fields=["estado", "motivo"])
-            campos: dict[str, Any] = {}
-            if resultado == estados.SUCESSO:
-                campos = {
-                    "token_hash": None,
-                    "expira_em": None,
-                    "operacao_id": None,
-                }
-            elif resultado == estados.REJEITADA:
-                campos = {"operacao_id": None}
-            if campos:
-                RecuperacaoSenha.objects.filter(
-                    pk=operacao.recuperacao_id,
-                    token_hash=operacao.token_hash,
-                    operacao_id=operacao.id,
-                ).update(**campos)
+        _registrar_resultado(operacao, resultado, motivo)
     # O resultado deve ser apresentado depois do commit da transação.
-    if operacao.estado == estados.SUCESSO:
-        return str(operacao.login)
-    if operacao.estado == estados.REJEITADA:
-        if operacao.motivo == "conta":
-            raise RecuperacaoSenhaError(USUARIO_INVALIDO, 401)
-        if operacao.motivo == "historico":
-            raise RecuperacaoSenhaError(
-                "A nova senha não pode ser uma das ultimas 5 anteriores", 401
-            )
-        if operacao.motivo == "padrao":
-            raise RecuperacaoSenhaError(SENHA_INVALIDA, 401)
-        if operacao.motivo == "politica":
-            raise RecuperacaoSenhaError(
-                "O histórico de senhas não está configurado no provedor.", 502
-            )
-    raise RecuperacaoSenhaError(
-        "Não foi possível concluir a recuperação de senha.", 502
-    )
+    return _resultado_alteracao(operacao)
